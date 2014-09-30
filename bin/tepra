@@ -66,6 +66,7 @@ end
 Base.init
 if global_options[:verbose]
 	puts "app_root:#{Base.app_root}"
+	puts "spc_path:#{Base.spc_path}"
 	puts "template:#{Base.template_path}"
 end
 
@@ -90,5 +91,6 @@ case command
 	when "console"
 		start_console
 	else
+		system("#{Base.spc_path}")
 		puts global
 	end

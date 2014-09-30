@@ -2,6 +2,10 @@ require 'spec_helper'
 
 module Tepra
 	describe Base do
+		describe ".spc_path", :current => true do
+			it { expect(Base.spc_path.to_s).to include('SPC') }
+		end
+
 		describe ".app_root" do
 			it { expect(Base.app_root).to be_an_instance_of(Pathname) }
 		end
