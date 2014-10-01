@@ -14,6 +14,7 @@ class Tepra::Commands::PrintCommand < Tepra::Command
 		csvfile_path = options[:args].shift unless csvfile_path
 		raise OptionParser::InvalidOption.new('specify CSVFILE') unless csvfile_path
 		command = Tepra::Base.command_spc_print(csvfile_path, options)
+		say command
 		system(command)
 	end
 end
