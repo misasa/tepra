@@ -2,6 +2,24 @@ require "tepra/version"
 require 'yaml'
 require 'pathname'
 
+class File
+	class << self
+		alias __expand_path__ expand_path
+	end
+	def self.expand_path(path, default_dir = '.', opts = {})
+		path = __expand_path__(path, default_dir)
+		if opts[:output_type]
+			case opts[:output_type]
+			when :windows
+				path = Pathname.new(path).sub(/^\/cygdrive\/(.)/){ $1.upcase + ':' }.to_s
+			when :unix
+				path = Pathname.new(path).sub(/^(.):/){ '/cygdrive/' + $1.downcase }.to_s
+			end
+		end
+		path
+	end
+end
+
 module Tepra
 	MIN_SPC_VERSION = 9
 	MAX_SPC_VERSION = 12
@@ -24,7 +42,9 @@ module Tepra
 	end
 
 	def self.template_path(template_name = 'default')
-		template_dir + (template_name + '.tpe')
+		ext = '.tpe'
+		ext = '.tpc' if spc_version =~ /^9/
+		template_dir + (File.basename(template_name, '.*') + ext)
 	end
 
 	def self.get_spc_path(version = 10)
@@ -36,12 +56,34 @@ module Tepra
 		Pathname.new(files[0])
 	end
 	@@spc_path = nil
+	def self.spc_path=(path)
+		@@spc_path = Pathname.new(path)
+	end
 	def self.spc_path
 		return @@spc_path if @@spc_path
 		Tepra::MIN_SPC_VERSION.upto(Tepra::MAX_SPC_VERSION) do |version|
 			break if @@spc_path = get_spc_path(version)
 		end
 		@@spc_path
+	end
+
+	def self.spc_version
+		spc_path.basename('.exe').to_s.match(/SPC(.+)/)
+		$1
+	end
+
+	def self.command_spc_print(csvfile_path, opts = {})
+		template_path = opts[:template_path] || self.template_path
+		printer_name = opts[:printer_name] || "KING JIM SR3900P"
+		csvfile_path = File.expand_path(csvfile_path,'.',:output_type => :windows)
+		template_path = File.expand_path(template_path,'.',:output_type => :windows)
+		set = opts[:set] || 1
+		command = "\"#{spc_path}\" /pt \"#{template_path},#{csvfile_path},#{set}\" \"#{printer_name}\""
+	end
+
+	def self.print_csvfile(csvfile_path, opts = {})
+		command = command_spc_print(csvfile_path, opts)
+		system(command)
 	end
 
 	@@default_config = {

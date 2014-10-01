@@ -2,8 +2,30 @@ require 'spec_helper'
 
 module Tepra
 	describe Base do
-		describe ".spc_path", :current => true do
+		describe ".spc_path" do
 			it { expect(Base.spc_path.to_s).to include('SPC') }
+		end
+
+		describe ".spc_version" do
+			before do
+				Base.spc_path = 'C:/examples/SPC10.exe'
+			end
+			it { expect(Base.spc_version).to include('10')}
+		end
+
+		describe ".command_spc_print" do
+			let(:csvfile_path){ 'example/example-data-in.csv' }
+			before do
+			end
+			it { expect(Base.command_spc_print(csvfile_path)).to include(File.expand_path(csvfile_path,'.', :output_type => :windows)) }
+		end
+
+		describe ".print_csvfile",  :current => true do
+			let(:csvfile_path){ 'example/example-data-in.csv' }
+			before do
+				Base.print_csvfile(csvfile_path)
+			end
+			it { expect(nil).to be_nil }			
 		end
 
 		describe ".app_root" do
