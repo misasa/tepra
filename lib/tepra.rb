@@ -24,6 +24,11 @@ module Tepra
 	MIN_SPC_VERSION = 9
 	MAX_SPC_VERSION = 12
   # Your code goes here...
+
+  def self.configuration
+  	@configuration ||= Tepra::ConfigFile.new []
+  end
+
   class Base
   	@@pref_path = nil
 	def self.pref_path=(pref) @@pref_path = pref end
@@ -116,4 +121,6 @@ module Tepra
 
 
   end
+
+  
 end
