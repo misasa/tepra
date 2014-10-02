@@ -68,7 +68,6 @@ module Tepra
 	end
 
 	def self.create_data_file(data_or_path, opts = {})
-		p opts
 		raise RuntimeError.new("Invalid DATA_or_DATAFILE") unless data_or_path
 		raise RuntimeError.new("Invalid DATA_or_DATAFILE") if data_or_path.empty?
 		#headers = opts[:skip_header]
@@ -98,7 +97,6 @@ module Tepra
 			end
 		end
 		temp.close
-		p File.read(temp.path)
 		temp
 	end
 

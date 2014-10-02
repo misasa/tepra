@@ -10,13 +10,14 @@ module Tepra::Commands
 			let(:template_path){ 'example/template.tpc'}
 			before do
 				cmd.handle_options args
+				p cmd
 			end
 			it { expect(cmd.options).to include(:printer_name => printer_name) }
 			it { expect(cmd.options).to include(:dry_run => true) }
 			it { expect(cmd.options).to include(:template_path => template_path) }			
 		end
 
-		describe "#execute", :current => true do
+		describe "#execute" do
 			subject { cmd.execute }
 			let(:cmd) { PrintCommand.new }
 			before do

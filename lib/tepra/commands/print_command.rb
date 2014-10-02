@@ -42,14 +42,16 @@ class Tepra::Commands::PrintCommand < Tepra::Command
 
 	def description
 		<<-EOF
-	The print command allows you to print lables.
+The print command allows you to print lables.
 
-	Examples:
+Examples:
 
-		$ echo -e 'Id,Name\\n0000-01,test' > example-data.csv
-		$ tepra print example-data.csv
+	$ echo -e 'Id,Name\\n0000-01,test' > example-data.csv
+	$ tepra print example-data.csv
 
-		$ tepra print "Id,Name\\n0000-01,test"
+	$ tepra print "Id,Name\\n0000-01,test"
+	$ tepra print "0000-01,test-1\\n0000-02,test-2" --no-skip-header
+	$ tepra print "0000-01,test-1"
 		EOF
 	end
 

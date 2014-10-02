@@ -94,27 +94,27 @@ class Tepra::Command
 			wrap chunk, 80 - 4
 		end.join "\n"
 		@parser.separator nil
-		@parser.separator " Description:"
+		@parser.separator "  Description:"
 		formatted.split("\n").each do |line|
-			@parser.separator " #{line.rstrip}"
+			@parser.separator "    #{line.rstrip}"
 		end		
 	end
 
 	def add_parser_run_info title, content
 		return if content.empty?
 		@parser.separator nil
-		@parser.separator " #{title}:"
+		@parser.separator "  #{title}:"
 		content.split(/\n/).each do |line|
-			@parser.separator " #{line}"
+			@parser.separator "    #{line}"
 		end
 	end
 
 	def add_parser_summary # :nodoc:
 		return unless @summary
 		@parser.separator nil
-		@parser.separator " Summary:"
+		@parser.separator "  Summary:"
 		wrap(@summary, 80 - 4).split("\n").each do |line|
-			@parser.separator " #{line.strip}"
+			@parser.separator "    #{line.strip}"
 		end
 	end
 
