@@ -119,6 +119,20 @@ class Tepra::Command
 	add_common_option('-h', '--help', 'Get help on this command') do |value, options|
 		options[:help] = true
 	end
+
+	# add_common_option('-v', '--[no-]verbose','Set the verbose level of output') do |value, options|
+	# 	# Set us to "really verbose" so the progress meter works
+	# 	if Tepra.configuration.verbose and value then
+	# 		Tepra.configuration.verbose = true
+	# 	else
+	# 		Tepra.configuration.verbose = value
+	# 	end
+	# end
+
+	# add_common_option('-q', '--quiet', 'Silence commands') do |value, options|
+	# 	Tepra.configuration.verbose = false
+	# end
+
 end
 
 module Tepra::Commands

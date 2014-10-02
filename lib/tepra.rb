@@ -1,41 +1,24 @@
 require "tepra/version"
+require "tepra/file"
 require 'yaml'
 require 'pathname'
 
-class File
-	class << self
-		alias __expand_path__ expand_path
-	end
-	def self.expand_path(path, default_dir = '.', opts = {})
-		path = __expand_path__(path, default_dir)
-		if opts[:output_type]
-			case opts[:output_type]
-			when :windows
-				path = Pathname.new(path).sub(/^\/cygdrive\/(.)/){ $1.upcase + ':' }.to_s
-			when :unix
-				path = Pathname.new(path).sub(/^(.):/){ '/cygdrive/' + $1.downcase }.to_s
-			end
-		end
-		path
-	end
-end
-
 module Tepra
+	APP_ROOT = File.dirname File.expand_path(__FILE__)
 	MIN_SPC_VERSION = 9
 	MAX_SPC_VERSION = 12
   # Your code goes here...
-
-  def self.configuration
-  	@configuration ||= Tepra::ConfigFile.new []
-  end
-
-  class Base
+  #class Base
   	@@pref_path = nil
 	def self.pref_path=(pref) @@pref_path = pref end
 	def self.pref_path() @@pref_path end
 	@@config = nil
 	def self.config=(config) @@config = config end
 	def self.config() @@config end
+
+	def self.configuration
+		@configuraion ||= Tepra::ConfigFile.new []
+	end
 
 	def self.app_root
 		path = Pathname.new(File.dirname(File.expand_path(__FILE__)) + '/..')
@@ -58,15 +41,20 @@ module Tepra
 			drive = "/cygdrive/c"
 		end
 		files = Dir.glob(Pathname.new(drive) + 'Program Files*' + 'King Jim' + '*' + "SPC#{version}*.exe")
+		return if files.empty?
 		Pathname.new(files[0])
 	end
 	@@spc_path = nil
 	def self.spc_path=(path)
-		@@spc_path = Pathname.new(path)
+		if path
+			@@spc_path = Pathname.new(path)
+		else
+			@@spc_path = nil
+		end
 	end
 	def self.spc_path
 		return @@spc_path if @@spc_path
-		Tepra::MIN_SPC_VERSION.upto(Tepra::MAX_SPC_VERSION) do |version|
+		Tepra::MAX_SPC_VERSION.downto(Tepra::MIN_SPC_VERSION) do |version|
 			break if @@spc_path = get_spc_path(version)
 		end
 		@@spc_path
@@ -80,8 +68,8 @@ module Tepra
 	def self.command_spc_print(csvfile_path, opts = {})
 		template_path = opts[:template_path] || self.template_path
 		printer_name = opts[:printer_name] || "KING JIM SR3900P"
-		csvfile_path = File.expand_path(csvfile_path,'.',:output_type => :windows)
-		template_path = File.expand_path(template_path,'.',:output_type => :windows)
+		csvfile_path = File.expand_path(csvfile_path,'.',:output_type => :mixed)
+		template_path = File.expand_path(template_path,'.',:output_type => :mixed)
 		set = opts[:set] || 1
 		command = "\"#{spc_path}\" /pt \"#{template_path},#{csvfile_path},#{set}\" \"#{printer_name}\""
 	end
@@ -120,7 +108,7 @@ module Tepra
 	end  	
 
 
-  end
+  #end
 
   
 end

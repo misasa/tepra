@@ -1,4 +1,5 @@
 require 'tepra'
+require 'tepra/runner'
 
 include Tepra
 Dir.glob("spec/support/**/*.rb") { |f| load f, true }

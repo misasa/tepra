@@ -6,6 +6,4 @@ Feature: print csvfile
 
    Scenario: print csvfile
 	Given I am not yet playing
-#	When I start app with "-k print"
-	When I start app with "print"
-#	When I start app with "print example/example-data-in.csv"
+	When I start app with 'print -n example/example-data-in.csv --printer="Example Printer"'

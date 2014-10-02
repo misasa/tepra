@@ -1,8 +1,8 @@
 require 'spec_helper'
 
 module Tepra
-	describe Base do
-		describe ".spc_path" do
+	#describe Base do
+		describe ".spc_path", :current => true do
 			it { expect(Base.spc_path.to_s).to include('SPC') }
 		end
 
@@ -13,16 +13,20 @@ module Tepra
 			it { expect(Base.spc_version).to include('10')}
 		end
 
-		describe ".command_spc_print" do
+		describe ".command_spc_print", :current => true do
+			subject{ Base.command_spc_print(csvfile_path, opts)}
 			let(:csvfile_path){ 'example/example-data-in.csv' }
+			let(:opts){ {:template_path => '/usr/lib/ruby/gems/1.9.1/gems/tepra-0.0.1/template/default.ptc'} }
 			before do
+				p subject
 			end
-			it { expect(Base.command_spc_print(csvfile_path)).to include(File.expand_path(csvfile_path,'.', :output_type => :windows)) }
+			it { expect(subject).to include(File.expand_path(csvfile_path,'.', :output_type => :mixed)) }
 		end
 
-		describe ".print_csvfile",  :current => true do
+		describe ".print_csvfile" do
 			let(:csvfile_path){ 'example/example-data-in.csv' }
 			before do
+				Base.spc_path = nil
 				Base.print_csvfile(csvfile_path)
 			end
 			it { expect(nil).to be_nil }			
@@ -62,5 +66,5 @@ module Tepra
 				FileUtils.rm(pref_path)
 			end
 		end
-	end
+	#end
 end
