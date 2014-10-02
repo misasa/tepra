@@ -1,7 +1,9 @@
 require "tepra/version"
 require "tepra/file"
+require "tepra/csv"
 require 'yaml'
 require 'pathname'
+require 'tempfile'
 
 module Tepra
 	APP_ROOT = File.dirname File.expand_path(__FILE__)
@@ -65,6 +67,41 @@ module Tepra
 		$1
 	end
 
+	def self.create_data_file(data_or_path, opts = {})
+		p opts
+		raise RuntimeError.new("Invalid DATA_or_DATAFILE") unless data_or_path
+		raise RuntimeError.new("Invalid DATA_or_DATAFILE") if data_or_path.empty?
+		#headers = opts[:skip_header]
+
+		if File.exists?(data_or_path)		
+			data = File.read(data_or_path)
+		else
+			data = data_or_path
+		end
+
+		temp = Tempfile.new(['tepra','.csv'])
+		csvfile_path =  temp.path
+
+		tcsv = CSV.new(data)
+		table = tcsv.read
+		table.shift if table.size > 1 && opts[:skip_header]
+		CSV.open(csvfile_path, "wb") do |output|
+			table.each do |row|
+				case row.size
+				when 1
+					output << [row[0], row[0], row[0]]
+				when 2
+					output << [row[0], row[0], row[1]]
+				else
+					output << row
+				end
+			end
+		end
+		temp.close
+		p File.read(temp.path)
+		temp
+	end
+
 	def self.command_spc_print(csvfile_path, opts = {})
 		template_path = opts[:template_path] || self.template_path
 		printer_name = opts[:printer_name] || "KING JIM SR3900P"
@@ -94,6 +131,10 @@ module Tepra
 		raise "could not find SPC*.exe" unless spc_path
   	end
 
+  	def self.default_printer
+  		@default_printer ||= "KING JIM SR3900P"
+  	end
+
 	def self.read_config
 		config = YAML.load(File.read(File.expand_path(self.pref_path)))
 	end
@@ -107,8 +148,6 @@ module Tepra
 		end
 	end  	
 
-
   #end
 
-  
 end

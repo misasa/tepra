@@ -13,7 +13,66 @@ module Tepra
 		it { expect(Tepra.spc_version).to include('10')}
 	end
 
-	describe ".command_spc_print", :current => true do
+	describe ".create_data_file", :current => true do
+		subject { Tepra.create_data_file(data, opts) }
+
+		context "with nil data" do
+			let(:data) { nil}
+			let(:opts) { {} }
+			it { expect{subject}.to raise_error }
+		end
+
+		context "with 1 column data without header" do
+			let(:data) { "000-01"}
+			let(:opts) { {:skip_header => true } }
+			it { expect{subject}.not_to raise_error }
+			it { expect(subject).to be_an_instance_of(Tempfile) }
+			it { expect(File.read(subject.path)).to eql("000-01,000-01,000-01\n")}
+		end
+
+		context "with empty data" do
+			let(:data) { ""}
+			let(:opts) { {} }
+			it { expect{subject}.to raise_error }
+		end
+
+		context "with 0 column data" do
+			let(:data) { "Id\n"}
+			let(:opts) { {:skip_header => true} }			
+			it { expect{subject}.not_to raise_error }
+			it { expect(subject).to be_an_instance_of(Tempfile) }
+			it { expect(File.read(subject.path)).to eql("Id,Id,Id\n")}
+		end
+
+		context "with 1 column data" do
+			let(:data) { "Id\n000-01"}
+			let(:opts) { {:skip_header => true} }
+			it { expect{subject}.not_to raise_error }
+			it { expect(subject).to be_an_instance_of(Tempfile) }
+			it { expect(File.read(subject.path)).to eql("000-01,000-01,000-01\n")}
+		end
+
+		context "with 2 column data" do
+			let(:data) { "Id,Name\n000-01,test"}
+			let(:opts) { {:skip_header => true} }
+
+			it { expect{subject}.not_to raise_error }
+			it { expect(subject).to be_an_instance_of(Tempfile) }
+			it { expect(File.read(subject.path)).to eql("000-01,000-01,test\n")}
+		end
+
+		context "with 3 coulumn data" do
+			let(:data) { "Uniq Id,Id,Name\n000-01,000-01,test"}
+			let(:opts) { {:skip_header => true} }
+
+			it { expect{subject}.not_to raise_error }
+			it { expect(subject).to be_an_instance_of(Tempfile) }
+			it { expect(File.read(subject.path)).to eql("000-01,000-01,test\n")}
+		end
+
+	end
+
+	describe ".command_spc_print" do
 		subject{ Tepra.command_spc_print(csvfile_path, opts)}
 		let(:csvfile_path){ 'example/example-data-in.csv' }
 		let(:opts){ {:template_path => '/usr/lib/ruby/gems/1.9.1/gems/tepra-0.0.1/template/default.ptc'} }

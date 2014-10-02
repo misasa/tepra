@@ -2,10 +2,10 @@ require 'spec_helper'
 require 'tepra/commands/print_command'
 module Tepra::Commands
 	describe PrintCommand do
-		describe "#handle_options" do
+		describe "#handle_options", :current => true do
 			#subject { cmd.handle_options args}
 			let(:cmd){ PrintCommand.new }
-			let(:args){ ["-n", "--printer", printer_name, "--template", template_path, "example/example-data-in.csv"] }
+			let(:args){ ["-h", "--no-skip-header", "-n", "--printer", printer_name, "--template", template_path, "example/example-data-in.csv"] }
 			let(:printer_name){ 'Example Printer' }
 			let(:template_path){ 'example/template.tpc'}
 			before do
@@ -16,15 +16,25 @@ module Tepra::Commands
 			it { expect(cmd.options).to include(:template_path => template_path) }			
 		end
 
-		describe "#execute" do
+		describe "#execute", :current => true do
+			subject { cmd.execute }
 			let(:cmd) { PrintCommand.new }
-			let(:options) { {:list => csvfile_path, :dry_run => true, :set => 4 } }
-			let(:csvfile_path) { 'example/example-data-in.csv' }
 			before do
 				cmd.stub(:options).and_return(options)
-				cmd.execute
 			end
-			it { expect(cmd.options).to include(:list => csvfile_path) }
+
+			context "with valid csvfile_path" do
+				let(:options) { {:args => [csvfile_path], :dry_run => true } }
+				let(:csvfile_path) { 'example/example-data.csv' }
+				it { expect{subject}.not_to raise_error }
+			end
+
+			context "with invalid csvfile_path" do
+				let(:options) { {:args => [csvfile_path], :dry_run => true } }
+				let(:csvfile_path) { 'example/example-data-.csv' }
+				it { expect{subject}.not_to raise_error }
+			end
+
 		end
 	end
 end

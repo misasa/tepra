@@ -34,6 +34,18 @@ class Tepra::Command
 		program_name
 	end
 
+	def arguments
+		""
+	end
+
+	def defaults_str
+		""
+	end
+
+	def description
+		nil
+	end
+
 	def show_help
 		parser.program_name = usage
 		say parser
@@ -47,12 +59,12 @@ class Tepra::Command
 		else
 			execute
 		end
-	rescue OptionParser::InvalidOption => ex
+	rescue => ex
 		say "ERROR: #{ex}. See '#{program_name} --help'." 		
 	end
 
 	def handle_options(args)
-		@options = {}
+		@options = @defaults
 		parser.parse!(args)
 		@options[:args] = args
 	end
@@ -74,6 +86,41 @@ class Tepra::Command
 	end
 
 	private
+
+	def add_parser_description
+		return unless description
+
+		formatted = description.split("\n\n").map do |chunk|
+			wrap chunk, 80 - 4
+		end.join "\n"
+		@parser.separator nil
+		@parser.separator " Description:"
+		formatted.split("\n").each do |line|
+			@parser.separator " #{line.rstrip}"
+		end		
+	end
+
+	def add_parser_run_info title, content
+		return if content.empty?
+		@parser.separator nil
+		@parser.separator " #{title}:"
+		content.split(/\n/).each do |line|
+			@parser.separator " #{line}"
+		end
+	end
+
+	def add_parser_summary # :nodoc:
+		return unless @summary
+		@parser.separator nil
+		@parser.separator " Summary:"
+		wrap(@summary, 80 - 4).split("\n").each do |line|
+			@parser.separator " #{line.strip}"
+		end
+	end
+
+	def wrap(text, width) # :doc:
+		text.gsub(/(.{1,#{width}})( +|$\n?)|(.{1,#{width}})/, "\\1\\3\n")
+	end
 
 	def add_parser_options
 		@parser.separator nil
@@ -98,6 +145,11 @@ class Tepra::Command
 
 		@parser.separator nil
 		configure_options "Common", Tepra::Command.common_options
+
+		add_parser_run_info "Arguments", arguments
+		add_parser_summary
+		add_parser_description
+		add_parser_run_info "Defaults", defaults_str
 
 	end
 
