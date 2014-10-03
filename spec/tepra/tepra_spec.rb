@@ -3,7 +3,18 @@ require 'spec_helper'
 module Tepra
 
 	describe ".spc_path", :current => true do
+		before do
+			Tepra.spc_path = nil
+		end
 		it { expect(Tepra.spc_path.to_s).to include('SPC') }
+	end
+
+	describe ".spc_path", :current => true do
+		before do
+			Tepra.spc_path = nil
+			Tepra.stub(:find_spc_path).and_return(nil)
+		end
+		it { expect{Tepra.spc_path.to_s}.to raise_error }
 	end
 
 	describe ".spc_version" do
@@ -76,20 +87,17 @@ module Tepra
 		subject{ Tepra.command_spc_print(csvfile_path, opts)}
 		let(:csvfile_path){ 'example/example-data-in.csv' }
 		let(:opts){ {:template_path => '/usr/lib/ruby/gems/1.9.1/gems/tepra-0.0.1/template/default.ptc'} }
-		before do
-			p subject
-		end
 		it { expect(subject).to include(File.expand_path(csvfile_path,'.', :output_type => :mixed)) }
 	end
 
-	describe ".print_csvfile" do
-		let(:csvfile_path){ 'example/example-data-in.csv' }
-		before do
-			Tepra.spc_path = nil
-			Tepra.print_csvfile(csvfile_path)
-		end
-		it { expect(nil).to be_nil }			
-	end
+	# describe ".print_csvfile" do
+	# 	let(:csvfile_path){ 'example/example-data-in.csv' }
+	# 	before do
+	# 		Tepra.spc_path = nil
+	# 		Tepra.print_csvfile(csvfile_path)
+	# 	end
+	# 	it { expect(nil).to be_nil }			
+	# end
 
 	describe ".app_root" do
 		it { expect(Tepra.app_root).to be_an_instance_of(Pathname) }
@@ -113,18 +121,40 @@ module Tepra
 	end
 
 
-	describe ".init" do
-		let(:pref_path){ 'dotteprarc' }
-		before do
-			Tepra.init(:pref_path => pref_path)
-		end
-		it { expect(Tepra.pref_path).to eql(pref_path)}
-		it { expect(File.exists?(pref_path)).to be_truthy }
-
-		after do
-			FileUtils.rm(pref_path)
-		end
+	describe ".config" do
+		it { expect(Tepra.config).to be_an_instance_of(Hash) }
 	end
+
+	describe ".default_printer with config" do
+		subject { Tepra.default_printer }
+		let(:printer_name) { 'Example Printer' }
+		before do
+			Tepra.config = { printer: printer_name }
+		end
+		it { expect(Tepra.default_printer).to eql(printer_name) }
+	end
+
+
+	describe ".default_printer without config" do
+		subject { Tepra.default_printer }
+#		let(:printer_name) { 'Example Printer' }
+		before do
+			Tepra.config = {  }
+		end
+		it { expect(Tepra.default_printer).to eql("KING JIM SR3900P") }
+	end
+	# describe ".init" do
+	# 	let(:pref_path){ 'dotteprarc' }
+	# 	before do
+	# 		Tepra.init(:pref_path => pref_path)
+	# 	end
+	# 	it { expect(Tepra.pref_path).to eql(pref_path)}
+	# 	it { expect(File.exists?(pref_path)).to be_truthy }
+
+	# 	after do
+	# 		FileUtils.rm(pref_path)
+	# 	end
+	# end
 
 
 end

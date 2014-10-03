@@ -11,16 +11,56 @@ module Tepra
 	MAX_SPC_VERSION = 12
   # Your code goes here...
   #class Base
-  	@@pref_path = nil
-	def self.pref_path=(pref) @@pref_path = pref end
-	def self.pref_path() @@pref_path end
-	@@config = nil
-	def self.config=(config) @@config = config end
-	def self.config() @@config end
-
-	def self.configuration
-		@configuraion ||= Tepra::ConfigFile.new []
+  	@pref_path = nil
+	def self.pref_path=(pref_path) @pref_path = pref_path end
+	def self.pref_path
+		@pref_path ||= "~/.teprarc"
 	end
+
+	@config = nil
+	def self.config=(config) @config = config end
+	def self.config
+		load_config unless @config
+		@config
+	end
+
+	@default_printer = "KING JIM SR3900P"
+	DEFAULT_CONFIG = {:printer => @default_printer }
+	def self.load_config
+#		self.pref_path = opts[:pref_path] || "~/.teprarc"
+		begin
+			self.config = self.read_config
+		rescue
+			self.config = DEFAULT_CONFIG
+			self.write_config
+		end		
+		#raise "could not find SPC*.exe" unless spc_path
+  	end
+
+	def self.init(opts = {})
+		self.pref_path = opts[:pref_path] || "~/.teprarc"
+		begin
+			self.config = self.read_config
+		rescue
+			self.config = @@default_config
+			self.write_config
+		end
+		raise "could not find SPC*.exe" unless spc_path
+  	end
+
+
+	def self.read_config
+		config = YAML.load(File.read(File.expand_path(pref_path)))
+	end
+
+	def self.write_config
+		config = Hash.new
+		config = self.config
+		STDERR.puts("writing |#{File.expand_path(self.pref_path)}|")
+		open(File.expand_path(self.pref_path), "w") do |f|
+			YAML.dump(config, f)
+		end
+	end  	
 
 	def self.app_root
 		path = Pathname.new(File.dirname(File.expand_path(__FILE__)) + '/..')
@@ -30,6 +70,14 @@ module Tepra
 	def self.template_dir
 		app_root + 'template'
 	end
+
+  	def self.default_printer
+  		if config.has_key?(:printer)
+  		  			config[:printer]
+  		else
+  			@default_printer
+  		end
+  	end
 
 	def self.template_path(template_name = 'default')
 		ext = '.tpe'
@@ -46,20 +94,27 @@ module Tepra
 		return if files.empty?
 		Pathname.new(files[0])
 	end
-	@@spc_path = nil
+
+	@spc_path = nil
 	def self.spc_path=(path)
 		if path
-			@@spc_path = Pathname.new(path)
+			@spc_path = Pathname.new(path)
 		else
-			@@spc_path = nil
+			@spc_path = nil
 		end
 	end
-	def self.spc_path
-		return @@spc_path if @@spc_path
+
+	def self.find_spc_path
 		Tepra::MAX_SPC_VERSION.downto(Tepra::MIN_SPC_VERSION) do |version|
-			break if @@spc_path = get_spc_path(version)
-		end
-		@@spc_path
+			return @spc_path if @spc_path = get_spc_path(version)
+		end		
+	end
+
+	def self.spc_path
+		return @spc_path if @spc_path
+		@spc_path = find_spc_path
+		raise RuntimeError.new("could not find SPC*.exe") unless @spc_path
+		@spc_path
 	end
 
 	def self.spc_version
@@ -102,7 +157,7 @@ module Tepra
 
 	def self.command_spc_print(csvfile_path, opts = {})
 		template_path = opts[:template_path] || self.template_path
-		printer_name = opts[:printer_name] || "KING JIM SR3900P"
+		printer_name = opts[:printer_name] || self.default_printer
 		csvfile_path = File.expand_path(csvfile_path,'.',:output_type => :mixed)
 		template_path = File.expand_path(template_path,'.',:output_type => :mixed)
 		set = opts[:set] || 1
@@ -114,37 +169,6 @@ module Tepra
 		system(command)
 	end
 
-	@@default_config = {
-#		'uri' => 'database.misasa.okayama-u.ac.jp/stone/'
-	}
-
-	def self.init(opts = {})
-		self.pref_path = opts[:pref_path] || "~/.teprarc"
-		begin
-			self.config = self.read_config
-		rescue
-			self.config = @@default_config
-			self.write_config
-		end
-		raise "could not find SPC*.exe" unless spc_path
-  	end
-
-  	def self.default_printer
-  		@default_printer ||= "KING JIM SR3900P"
-  	end
-
-	def self.read_config
-		config = YAML.load(File.read(File.expand_path(self.pref_path)))
-	end
-
-	def self.write_config
-		config = Hash.new
-		config = self.config
-		STDERR.puts("writing |#{File.expand_path(self.pref_path)}|")
-		open(File.expand_path(self.pref_path), "w") do |f|
-			YAML.dump(config, f)
-		end
-	end  	
 
   #end
 
