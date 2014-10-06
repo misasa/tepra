@@ -135,7 +135,7 @@ module Tepra
 
 		temp = Tempfile.new(['tepra','.csv'])
 		csvfile_path =  temp.path
-
+		p data
 		tcsv = CSV.new(data)
 		table = tcsv.read
 		table.shift if table.size > 1 && opts[:skip_header]

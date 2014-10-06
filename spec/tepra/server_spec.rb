@@ -10,9 +10,43 @@ module Tepra
 			Tepra::Server
 		end
 
-		it 'should be OK' do
-			get '/'
-			expect(last_response).to be_ok
+		describe "get '/'", :current => true do
+			before do
+				get '/', params
+			end
+
+			context "without params" do
+				let(:params){ {} }
+				it { expect(last_response).to be_ok }
+			end
+
+			context "with params" do
+				let(:params){ {:data => 'hello,world'} }
+				it { expect(last_response).to be_ok }
+			end
+
+		end
+
+		describe "get '/print'" do
+			before do
+				get '/print', params
+			end
+
+			context "without params" do
+				let(:params){ {} }
+				it { expect(last_response).to be_ok }
+			end
+
+			context "with params" do
+				let(:params){ {:data => 'hello,world'} }
+				it { expect(last_response).to be_ok }
+			end
+
+
+			context "with params" do
+				let(:params){ {:data => "hello,world"} }
+				it { expect(last_response).to be_ok }
+			end
 		end
 
 	end
