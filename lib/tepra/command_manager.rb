@@ -8,6 +8,7 @@ class Tepra::CommandManager
 	attr_accessor :program_name
   	BUILTIN_COMMANDS = [
   		:print,
+      :server,
   		:help,
   	]
   	def self.instance
