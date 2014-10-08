@@ -122,6 +122,45 @@ module Tepra
 		$1
 	end
 
+	def self.print(data_or_path, opts = {})
+		timeout = opts[:timeout] || 5
+
+		csvfile_path = Tepra.create_data_file(data_or_path, opts)
+		cmd = Tepra.command_spc_print(csvfile_path, opts)
+		#system(command)
+		start = Time.now
+		pid = Process::spawn(cmd)
+		while true do
+			sleep 1
+			dtime = Time.now - start
+			if dtime > timeout
+				Process.kill("KILL",pid)
+				Process.wait(pid)
+				raise Tepra::TimeoutError.new("print job was timed out")
+			end
+			break if Process.waitpid(pid, Process::WNOHANG)		
+		end
+
+	end
+
+	def self.execute_command(cmd, opts = {})
+		timeout = opts[:timeout] || 10
+		puts "#{cmd} executing..."
+		start = Time.now
+		pid = Process::spawn(cmd)
+		while true do
+			sleep 1
+			dtime = Time.now - start
+			if dtime > timeout
+				Process.kill("KILL",pid)
+				Process.wait(pid)
+				raise "Timeout"
+			end
+			break if Process.waitpid(pid, Process::WNOHANG)		
+		end
+	end
+
+
 	def self.create_data_file(data_or_path, opts = {})
 		raise RuntimeError.new("Invalid DATA_or_DATAFILE") unless data_or_path
 		raise RuntimeError.new("Invalid DATA_or_DATAFILE") if data_or_path.empty?
@@ -171,5 +210,10 @@ module Tepra
 
 
   #end
+  class TimeoutError < StandardError
+  	def initialize(message)
+  		@message = message
+  	end
+  end
 
 end

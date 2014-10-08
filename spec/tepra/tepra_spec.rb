@@ -2,14 +2,14 @@ require 'spec_helper'
 
 module Tepra
 
-	describe ".spc_path", :current => true do
+	describe ".spc_path" do
 		before do
 			Tepra.spc_path = nil
 		end
 		it { expect(Tepra.spc_path.to_s).to include('SPC') }
 	end
 
-	describe ".spc_path", :current => true do
+	describe ".spc_path" do
 		before do
 			Tepra.spc_path = nil
 			Tepra.stub(:find_spc_path).and_return(nil)
@@ -24,7 +24,14 @@ module Tepra
 		it { expect(Tepra.spc_version).to include('10')}
 	end
 
-	describe ".create_data_file", :current => true do
+	describe ".print", :current => true do
+		subject{ Tepra.print(data_or_path, opts) }
+		let(:data_or_path){ 'example/example-data-in.csv' }
+		let(:opts){{}}
+		it { expect{subject}.not_to raise_error }
+	end
+
+	describe ".create_data_file" do
 		subject { Tepra.create_data_file(data, opts) }
 
 		context "with nil data" do

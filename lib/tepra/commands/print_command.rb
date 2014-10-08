@@ -60,10 +60,12 @@ Examples:
 		args = options.delete(:args)
 		raise OptionParser::InvalidArgument.new('specify DATA_or_DATAFILE') if args.empty?
 		arg = args.shift
-		csvfile_path = Tepra.create_data_file(arg, options)
-
-		command = Tepra.command_spc_print(csvfile_path, options)
-		say command if options[:dry_run]
-		system(command) unless options[:dry_run]
+		if options[:dry_run]
+			csvfile_path = Tepra.create_data_file(arg, options)
+			command = Tepra.command_spc_print(csvfile_path, options)
+			say command if options[:dry_run]
+		else
+			Tepra.print(arg, options)
+		end
 	end
 end

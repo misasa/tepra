@@ -8,9 +8,7 @@ module Tepra
 		get '/print' do
 			data = params.delete("data")
 			if data
-				csvfile_path = Tepra.create_data_file(data, params)
-				command = Tepra.command_spc_print(csvfile_path, params)
-				system(command)
+				Tepra.print(data, params)
 			end
 			erb :index
 			#'Hello world!'
