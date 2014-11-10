@@ -11,9 +11,17 @@ module Tepra
 				Tepra.print(data, params)
 			end
 			erb :index
-			#'Hello world!'
 		end
 
+		get '/Format/Print' do
+			id = params.delete("UID")
+			name = params.delete("NAME")
+			if id && name
+				data = "#{id},#{name}"
+				Tepra.print(data, params)
+			end
+			erb :index
+		end
 
 		run! if app_file == $0
 	end

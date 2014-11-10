@@ -73,7 +73,7 @@ module Tepra
 
   	def self.default_printer
   		if config.has_key?(:printer)
-  		  			config[:printer]
+  		  	config[:printer]
   		else
   			@default_printer
   		end
