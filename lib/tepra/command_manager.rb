@@ -55,10 +55,11 @@ class Tepra::CommandManager
 			opts.banner = "tepra: a utility for Tepra"
 			opts.define_head "Usage: tepra [options] [subcommand [options]]"
 			opts.separator ""
-			opts.separator "Commands:"
-			opts.separator ""	
+#			opts.separator "Commands:"
+#			opts.separator ""	
 			opts.separator "Examples:"
 			opts.separator "	tepra print csvfile"
+      opts.separator "  tepra server"
 			opts.separator ""
 			opts.separator "Options:"
 
