@@ -3,7 +3,7 @@ require 'tepra/command_manager'
 
 class Tepra::Runner
 	def initialize(options = {})
-  @command_manager_class = options[:command_manager] || Tepra::CommandManager	
+  		@command_manager_class = options[:command_manager] || Tepra::CommandManager	
 	end
 
 	def run(args)
