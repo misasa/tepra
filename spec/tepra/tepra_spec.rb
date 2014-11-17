@@ -24,11 +24,27 @@ module Tepra
 		it { expect(Tepra.spc_version).to include('10')}
 	end
 
-	describe ".print", :current => true do
+	describe ".print" do
 		subject{ Tepra.print(data_or_path, opts) }
 		let(:data_or_path){ 'example/example-data-in.csv' }
 		let(:opts){{}}
 		it { expect{subject}.not_to raise_error }
+	end
+
+	describe ".printme", :current => true do
+		let(:opts){ { :address => address, :port => port } }
+		let(:port){ 8889 }
+		let(:address){ ['0.0.0.0', '172.24.1.234'] }
+		it {
+			address.each do |addr|
+				expect(Tepra).to receive(:print).with("#{addr}:#{port}")				
+			end
+			Tepra.printme(opts)
+		}
+	end
+
+	describe ".ip_address", :current => true do
+		it { expect{ Tepra.ip_address }.not_to raise_error }
 	end
 
 	describe ".create_data_file" do

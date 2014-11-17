@@ -25,7 +25,8 @@ module Tepra
 	end
 
 	@default_printer = "KING JIM SR3900P"
-	DEFAULT_CONFIG = {:printer => @default_printer }
+	@default_port = 8889
+	DEFAULT_CONFIG = {:printer => @default_printer, :port => @default_port }
 	def self.load_config
 #		self.pref_path = opts[:pref_path] || "~/.teprarc"
 		begin
@@ -79,6 +80,14 @@ module Tepra
   		end
   	end
 
+  	def self.default_port
+  		if config.has_key?(:port)
+  		  	config[:port]
+  		else
+  			@default_port
+  		end
+  	end
+
 	def self.template_path(template_name = 'default')
 		ext = '.tpe'
 		ext = '.tpc' if spc_version =~ /^9/
@@ -120,6 +129,35 @@ module Tepra
 	def self.spc_version
 		spc_path.basename('.exe').to_s.match(/SPC(.+)/)
 		$1
+	end
+
+	def self.ip_address
+		re2 = %r/(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/
+		re = %r/IPv4\sAddress/
+		#re = %r/IP/o
+		lines = IO.popen('ipconfig /all'){|fd| 
+			fd.readlines.map{|str|
+				str.force_encoding('UTF-8')
+				str = str.encode("UTF-16BE", "UTF-8", :invalid => :replace, :undef => :replace, :replace => '?').encode("UTF-8")
+			}
+		}
+		candidates = lines.select{|line| line =~ re}
+		address = []
+		candidates.each do |line|
+			if line =~ re2
+				address << Regexp.last_match[1]
+			end
+		end
+		address
+	end
+
+	def self.printme(opts = {})
+		port = opts[:port] || default_port
+		address = opts[:address] || ip_address
+		address.each do |addr|
+			addr_with_port = "#{addr}:#{port}"
+			self.print(addr_with_port)
+		end
 	end
 
 	def self.print(data_or_path, opts = {})

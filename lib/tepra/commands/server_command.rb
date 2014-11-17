@@ -3,7 +3,7 @@ require 'tepra/server'
 
 class Tepra::Commands::ServerCommand < Tepra::Command
 	def initialize
-		super 'server', 'Tepra HTTP server', :port => 8889, :bind => '0.0.0.0'
+		super 'server', 'Tepra HTTP server', :bind => '0.0.0.0', :port => Tepra.default_port
 
 		OptionParser.accept :Port do |port|
 			if port =~ /\A\d+\z/ then
@@ -38,6 +38,7 @@ class Tepra::Commands::ServerCommand < Tepra::Command
 		if options[:quit]
 			Tepra::Server.quit!
 		else
+			Tepra.printme(:port => options[:port])
 			Tepra::Server.run! options
 		end
 	end
