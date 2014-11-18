@@ -1,0 +1,13 @@
+.container-fluid
+  .panel.panel-default
+    .panel-heading
+      Listen address and port
+    %ul.list-group
+    - @address_with_port.each do |addr|
+      %li.list-group-item
+        %form{:method => "post", :action => '/print'}
+          .input-group
+            %input.form-control{type: "text", name: 'data', value: addr, readonly: true }
+            %span.input-group-btn
+              %button.btn.btn-primary{:type => "submit"}
+                %span.glyphicon.glyphicon-print

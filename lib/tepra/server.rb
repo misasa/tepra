@@ -2,15 +2,20 @@ module Tepra
 	require 'sinatra/base'
 	class Server < Sinatra::Base
 		get '/' do
-			erb :index
+			haml :index
 		end
 
-		get '/print' do
+		get '/info' do
+			@address_with_port = Tepra.ip_address.map{|addr| "#{addr}:#{request.port}"}
+			haml :info
+		end
+
+		post '/print' do
 			data = params.delete("data")
 			if data
 				Tepra.print(data, params)
 			end
-			erb :index
+			redirect '/'
 		end
 
 		get '/Format/Print' do
@@ -20,7 +25,7 @@ module Tepra
 				data = "#{id},#{name}"
 				Tepra.print(data, params)
 			end
-			erb :index
+			200
 		end
 
 		run! if app_file == $0

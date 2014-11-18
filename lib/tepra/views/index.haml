@@ -1,0 +1,7 @@
+.container-fluid
+  %form{:method => "post", :action => '/print'}
+    .input-group
+      %input.form-control{type: "text", name: 'data', placeholder: "ID, name"}
+      %span.input-group-btn
+        %button.btn.btn-primary{:type => "submit"}
+          %span.glyphicon.glyphicon-print

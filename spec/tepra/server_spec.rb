@@ -10,14 +10,24 @@ module Tepra
 			Tepra::Server
 		end
 
-		describe "get '/'", :current => true do
+		describe "get '/info'", :current => true do
+			it {
+				get '/info'
+				expect(last_response).to be_ok
+			}
+		end
+
+		describe "get '/'" do
 			before do
 				get '/', params
 			end
 
 			context "without params" do
 				let(:params){ {} }
-				it { expect(last_response).to be_ok }
+				it { 
+					expect(last_response).to be_ok
+				}
+
 			end
 
 			context "with params" do
@@ -27,7 +37,7 @@ module Tepra
 
 		end
 
-		describe "get '/Format/Print'", :current => true do
+		describe "get '/Format/Print'" do
 			context "without params" do
 				let(:params){ {} }
 				before do
@@ -46,7 +56,7 @@ module Tepra
 
 		end
 
-		describe "get '/print'" do
+		describe "post '/print'" do
 			# before do
 			# 	get '/print', params
 			# end
@@ -54,19 +64,21 @@ module Tepra
 			context "without params" do
 				let(:params){ {} }
 				before do
-					get '/print', params
+					post '/print', params
 				end
-				it { expect(last_response).to be_ok }
+				it { 
+					expect(last_response).to be_redirect
+				}
 			end
 
 			context "with params" do
 				let(:params){ {:data => 'hello,world'} }
 				before do
 					allow(Tepra).to receive(:print)
-					get '/print', params
+					post '/print', params
 				end
 
-				it { expect(last_response).to be_ok }
+				it { expect(last_response).to be_redirect }
 			end
 
 
@@ -78,7 +90,7 @@ module Tepra
 				end
 				it { 
 					expect(Tepra).to receive(:print).with("hello,world",{}).and_return('expect')
-					get '/print', params
+					post '/print', params
 				}
 				#it { expect(last_response).to be_ok }
 			end

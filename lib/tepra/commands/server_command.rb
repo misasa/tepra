@@ -38,7 +38,7 @@ class Tepra::Commands::ServerCommand < Tepra::Command
 		if options[:quit]
 			Tepra::Server.quit!
 		else
-			Tepra.printme(:port => options[:port])
+			#Tepra.printme(:port => options[:port])
 			Tepra::Server.run! options
 		end
 	end
