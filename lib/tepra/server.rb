@@ -13,7 +13,10 @@ module Tepra
 		post '/print' do
 			data = params.delete("data")
 			if data
-				Tepra.print(data, params)
+				begin
+					Tepra.print(data, params)
+				rescue => ex
+				end
 			end
 			redirect '/'
 		end
@@ -22,8 +25,11 @@ module Tepra
 			id = params.delete("UID")
 			name = params.delete("NAME")
 			if id && name
-				data = "#{id},#{name}"
-				Tepra.print(data, params)
+				begin
+					data = "#{id},#{name}"
+					Tepra.print(data, params)
+				rescue => ex
+				end
 			end
 			200
 		end
