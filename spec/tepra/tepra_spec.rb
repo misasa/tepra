@@ -24,14 +24,14 @@ module Tepra
 		it { expect(Tepra.spc_version).to include('10')}
 	end
 
-	describe ".print" do
+	describe ".print", :current => true do
 		subject{ Tepra.print(data_or_path, opts) }
 		let(:data_or_path){ 'example/example-data-in.csv' }
 		let(:opts){{}}
 		it { expect{subject}.not_to raise_error }
 	end
 
-	describe ".printme", :current => true do
+	describe ".printme" do
 		let(:opts){ { :address => address, :port => port } }
 		let(:port){ 8889 }
 		let(:address){ ['0.0.0.0', '172.24.1.234'] }
@@ -43,7 +43,7 @@ module Tepra
 		}
 	end
 
-	describe ".ip_address", :current => true do
+	describe ".ip_address" do
 		it { expect{ Tepra.ip_address }.not_to raise_error }
 	end
 
@@ -166,6 +166,30 @@ module Tepra
 		end
 		it { expect(Tepra.default_printer).to eql("KING JIM SR3900P") }
 	end
+
+	describe ".default_timeout with config" do
+		subject { Tepra.default_timeout }
+		let(:timeout) { 50 }
+		before do
+			Tepra.config = { timeout: timeout }
+		end
+		it { expect(Tepra.default_timeout).to eql(timeout) }
+		after do
+			Tepra.config = nil
+		end
+	end
+
+
+	describe ".default_timeout without config" do
+		subject { Tepra.default_timeout }
+		before do
+			Tepra.config = nil
+		end
+		# before do
+		# 	Tepra.class_variable_set(:default_timeout, timeout)
+		# end
+		it { expect(Tepra.default_timeout).not_to be_nil }
+	end	
 	# describe ".init" do
 	# 	let(:pref_path){ 'dotteprarc' }
 	# 	before do

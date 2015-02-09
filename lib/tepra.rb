@@ -26,7 +26,8 @@ module Tepra
 
 	@default_printer = "KING JIM SR3900P"
 	@default_port = 8889
-	DEFAULT_CONFIG = {:printer => @default_printer, :port => @default_port }
+	@default_timeout = 5
+	DEFAULT_CONFIG = {:printer => @default_printer, :port => @default_port, :timeout => @default_timeout }
 	def self.load_config
 #		self.pref_path = opts[:pref_path] || "~/.teprarc"
 		begin
@@ -85,6 +86,14 @@ module Tepra
   		  	config[:port]
   		else
   			@default_port
+  		end
+  	end
+
+  	def self.default_timeout
+  		if config.has_key?(:timeout)
+  			config[:timeout]
+  		else
+  			@default_timeout
   		end
   	end
 
@@ -161,19 +170,21 @@ module Tepra
 	end
 
 	def self.print(data_or_path, opts = {})
-		timeout = opts[:timeout] || 5
-
+		timeout = (opts[:timeout] || self.default_timeout).to_i
 		csvfile_path = Tepra.create_data_file(data_or_path, opts)
 		cmd = Tepra.command_spc_print(csvfile_path, opts)
-		#system(command)
+
 		start = Time.now
 		pid = Process::spawn(cmd)
 		while true do
 			sleep 1
 			dtime = Time.now - start
 			if dtime > timeout
-				Process.kill("KILL",pid)
-				Process.wait(pid)
+				begin
+					Process.kill("KILL",pid)
+					Process.wait(pid)
+				rescue => ex
+				end
 				raise Tepra::TimeoutError.new("print job was timed out")
 			end
 			break if Process.waitpid(pid, Process::WNOHANG)		
