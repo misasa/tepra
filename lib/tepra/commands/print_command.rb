@@ -43,15 +43,23 @@ class Tepra::Commands::PrintCommand < Tepra::Command
 	def description
 		<<-EOF
 The print command allows you to print lables.
+If you see timeout error, raise `timeout' value on configration file `~/.teprarc'.
 
-Examples:
-
+EXAMPLE
 	$ echo -e 'Id,Name\\n0000-01,test' > example-data.csv
 	$ tepra print example-data.csv
 
 	$ tepra print "Id,Name\\n0000-01,test"
 	$ tepra print "0000-01,test-1\\n0000-02,test-2" --no-skip-header
 	$ tepra print "0000-01,test-1"
+
+SEE ALSO
+    http://dream.misasa.okayama-u.ac.jp
+
+IMPLEMENTATION
+    Copyright (c) 2015 ISEI, Okayama University
+    Licensed under the same terms as Ruby
+
 		EOF
 	end
 
