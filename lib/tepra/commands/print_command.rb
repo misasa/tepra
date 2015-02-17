@@ -2,7 +2,7 @@ require 'tepra/command'
 
 class Tepra::Commands::PrintCommand < Tepra::Command
 	def initialize
-		super 'print', 'Print label', :set => 1, :template => Tepra.template_path, :skip_header => true, :printer => Tepra.default_printer
+		super 'print', 'Print a label', :set => 1, :template => Tepra.template_path, :skip_header => true, :printer => Tepra.default_printer
 
 		add_option('-s', '--set NUMBER',
 						'Specify number of labels') do |set, options|
@@ -42,8 +42,11 @@ class Tepra::Commands::PrintCommand < Tepra::Command
 
 	def description
 		<<-EOF
-The print command allows you to print lables.
-If you see timeout error, raise `timeout' value on configration file `~/.teprarc'.
+    Print a label.
+    If you see timeout error, set `timeout' line on configration file `~/.teprarc' as below and raise the value.
+    Default setting is 5 seconds.
+
+    :timeout: 10
 
 EXAMPLE
 	$ echo -e 'Id,Name\\n0000-01,test' > example-data.csv
