@@ -144,7 +144,8 @@ module Tepra
 		re2 = %r/(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/
 		re = %r/IPv4\sAddress/
 		#re = %r/IP/o
-		lines = IO.popen('ipconfig /all'){|fd| 
+		command = 'cmd /c "chcp 437 & ipconfig/all"'
+		lines = IO.popen(command){|fd| 
 			fd.readlines.map{|str|
 				str.force_encoding('UTF-8')
 				str = str.encode("UTF-16BE", "UTF-8", :invalid => :replace, :undef => :replace, :replace => '?').encode("UTF-8")

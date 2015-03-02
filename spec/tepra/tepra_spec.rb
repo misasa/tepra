@@ -24,7 +24,7 @@ module Tepra
 		it { expect(Tepra.spc_version).to include('10')}
 	end
 
-	describe ".print", :current => true do
+	describe ".print" do
 		subject{ Tepra.print(data_or_path, opts) }
 		let(:data_or_path){ 'example/example-data-in.csv' }
 		let(:opts){{}}
@@ -43,7 +43,11 @@ module Tepra
 		}
 	end
 
-	describe ".ip_address" do
+	describe ".ip_address", :current => true do
+		subject {Tepra.ip_address }
+		before do
+			puts subject
+		end
 		it { expect{ Tepra.ip_address }.not_to raise_error }
 	end
 
