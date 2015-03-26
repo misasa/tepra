@@ -52,16 +52,22 @@ class Tepra::CommandManager
 		@opts ||= OptionParser.new do |opts|
 			#@options = {}
     	opts.banner = "tepra: a utility for Tepra"
-    	opts.define_head "Usage: tepra [options] [subcommand [options]]"
+    	opts.define_head "SYNOPSIS: tepra [options] [subcommand [options]]"
+		opts.separator ""
+		opts.separator "COMMANDS:"
+        opts.separator "  #{BUILTIN_COMMANDS.join(', ')}"
     	opts.separator ""
     #			opts.separator "Commands:"
     #			opts.separator ""	
-    	opts.separator "Examples:"
-      opts.separator "  tepra"
-    	opts.separator "	tepra print csvfile"
-      opts.separator "  tepra server"
+    	opts.separator "EXAMPLE:"
+        # opts.separator "  tepra"
+    	opts.separator "  tepra print csvfile"
+        opts.separator "  tepra server"
     	opts.separator ""
-    	opts.separator "Options:"
+		opts.separator "SEE ALSO"
+		opts.separator "  tepra [command] --help"
+		opts.separator ""
+    	opts.separator "OPTIONS:"
 
 
     	opts.on_tail("-?", "--help", "Show this message") do |v|
