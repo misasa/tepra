@@ -2,7 +2,7 @@ require 'tepra/command'
 
 class Tepra::Commands::PrintCommand < Tepra::Command
 	def initialize
-		super 'print', 'Print a label', :set => 1, :template => Tepra.template_path, :skip_header => true, :printer => Tepra.default_printer
+		super 'print', 'Print label with QR-code', :set => 1, :template => Tepra.template_path, :skip_header => true, :printer => Tepra.default_printer
 
 		add_option('-s', '--set NUMBER',
 						'Specify number of labels') do |set, options|
@@ -33,7 +33,7 @@ class Tepra::Commands::PrintCommand < Tepra::Command
 	end
 
 	def arguments
-		"DATA_or_DATAFILE\tstring or datafile"
+		"datastring/csvfile"
 	end
 
 	def defaults_str
@@ -41,25 +41,37 @@ class Tepra::Commands::PrintCommand < Tepra::Command
 	end
 
 	def description
-		<<-EOF
-    Print a label.
-    If you see timeout error, set `timeout' line on configration file `~/.teprarc' as below and raise the value.
-    Default setting is 5 seconds.
+	<<-EOF
+    Print label with QR-code.  If you see timeout error, set `timeout'
+    line on configration file `~/.teprarc' as below and raise the
+    value.  Default setting is 5 seconds.
 
     :timeout: 10
 
-EXAMPLE
-	$ echo -e 'Id,Name\\n0000-01,test' > example-data.csv
-	$ tepra print example-data.csv
+    When you feed multiple entries delimited by CR either by
+    datastring or datacsvfile, it prints multiple labels.  Note that
+    by default it skips the first line.
 
-	$ tepra print "Id,Name\\n0000-01,test"
+Synopsis:
+    tepra print "ID,name"
+    tepra print csvfile
+
+Options:
+    --no-skip-header:  Print first line
+
+Example:
+	$ echo -e 'ID,Name\\n0000-01,KLB1' > my-great-list.csv
+	$ tepra print my-great-list.csv
+
+	$ tepra print "ID,Name\\n0000-01,test"
 	$ tepra print "0000-01,test-1\\n0000-02,test-2" --no-skip-header
 	$ tepra print "0000-01,test-1"
 
-SEE ALSO
+See also:
+    orochi-label
     http://dream.misasa.okayama-u.ac.jp
 
-IMPLEMENTATION
+Implementation:
     Copyright (c) 2015 ISEI, Okayama University
     Licensed under the same terms as Ruby
 
