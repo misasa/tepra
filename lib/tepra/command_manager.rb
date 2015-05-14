@@ -52,11 +52,11 @@ class Tepra::CommandManager
 		@opts ||= OptionParser.new do |opts|
 			#@options = {}
     	opts.banner = "tepra: command-line utility for Tepra"
-    	opts.define_head "Usage: tepra [main-option] [sub-command [sub-option]]"
+    	opts.define_head "Usage: tepra [option] [sub-command [sub-option]]"
 		opts.separator ""
 		opts.separator "Summary:"
 		opts.separator "    Print QR-code to King Jim's Tepra from command line or via REST
-    interface.  For latter, invoke with server mode."
+    interface"
 		opts.separator ""
 		opts.separator "Description:"
 		opts.separator "    This gem is part of Medusa and supports Ruby for Windows only
@@ -75,14 +75,22 @@ class Tepra::CommandManager
 		opts.separator ""
 		opts.separator "    Issue following to have a test label."
 		opts.separator "    DOS> tepra print ''20110119154409-142-363,Heaven''"
-		opts.separator ""
+        opts.separator ""
+		opts.separator "    To print label from web browser, launch this command as server."
+		opts.separator "    Without sub-command, this will startup as server mode.  Then access to"
+		opts.separator "    the server with typical URL `http://localhost:8889/'."
+        opts.separator ""
 		opts.separator "Sub-command:"
-		opts.separator "    print   :  print QR-code"
-		opts.separator "    server  :  launch server to accept queue via REST interface"
+        opts.separator "    unspecified :  `server' is set"
+		opts.separator "    server      :  launch server to accept queue via REST interface"
+		opts.separator "    print       :  print QR-code"
 		opts.separator ""
     	opts.separator "Examples:"
-		opts.separator "    DOS> tepra print ''20110119154409-142-363,Heaven''"
+		opts.separator "    DOS> tepra"
 		opts.separator "    DOS> tepra server"
+		opts.separator "    darwin$ open http://localhost:8889/"
+		opts.separator ""
+		opts.separator "    DOS> tepra print ''20110119154409-142-363,Heaven''"
 		opts.separator ""
 		opts.separator "See Also"
 		opts.separator "    tepra-duplicate --help"
@@ -100,7 +108,7 @@ class Tepra::CommandManager
     	# opts.separator "  tepra print csvfile"
         # opts.separator "  tepra server"
 		# opts.separator "  tepra [command] --help"
-    	opts.separator "Main-option:"
+    	opts.separator "option:"
 
 
     	opts.on_tail("-?", "--help", "Show this message") do |v|
