@@ -30,6 +30,11 @@ tepra print
 
 ## Revise the documentation and reflect to rubygem
 
+When you want to check the documentation, issue following.
+
+    $ cd ~/orochi-devel/tepra/
+    $ bundle exec rspec spec/tepra/commands/print_command_spec.rb --tag show_help:true
+
 After revision, issue following.
 
     $ cd ~/orochi-devel/tepra/

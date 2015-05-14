@@ -2,7 +2,15 @@ require 'spec_helper'
 require 'tepra/commands/server_command'
 module Tepra::Commands
 	describe ServerCommand do
-		describe "#handle_options" do
+	  let(:cmd){ ServerCommand.new }
+      describe "#show_help", :show_help => true do
+        it {
+          puts "===================================="
+          expect{ cmd.show_help }.not_to raise_error
+          puts "===================================="
+        }
+      end
+	  describe "#handle_options" do
 			#subject { cmd.handle_options args}
 			let(:cmd){ ServerCommand.new }
 			let(:args){ [] }
