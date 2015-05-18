@@ -3,10 +3,15 @@ require 'spec_helper'
 module Tepra
 
 	describe ".spc_path" do
+		subject{ Tepra.spc_path }
 		before do
 			Tepra.spc_path = nil
 		end
-		it { expect(Tepra.spc_path.to_s).to include('SPC') }
+		it { 
+			expect(Tepra).to receive(:find_spc_path).and_return('SPC_PATH')
+			subject
+			#expect(Tepra.spc_path.to_s).to include('SPC') 
+		}
 	end
 
 	describe ".spc_path" do

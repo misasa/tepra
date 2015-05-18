@@ -3,6 +3,10 @@ require 'tepra/commands/print_command'
 module Tepra::Commands
 	describe PrintCommand do
 	  let(:cmd){ PrintCommand.new }
+	  before do
+		allow(Tepra).to receive(:template_path).and_return('/path/to/template.spc')
+	  end
+
       describe "#show_help", :show_help => true do
         it {
           puts "===================================="
