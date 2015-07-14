@@ -1,12 +1,14 @@
 # Tepra
 
-Utilities for KING JIM's Tepra
+Provide utilities for KING JIM's Tepra
 
 ## Installation
 
 Add this line to your application's Gemfile:
 
-    gem 'tepra'
+```ruby
+gem 'tepra'
+```
 
 And then execute:
 
@@ -18,7 +20,9 @@ Or install it yourself as:
 
 ## Usage
 
-tepra print
+See online document:
+
+    $ tepra --help
 
 ## Contributing
 
