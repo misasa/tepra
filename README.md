@@ -19,11 +19,17 @@ Or install it yourself as:
     $ gem source -a http://dream.misasa.okayama-u.ac.jp/rubygems
     $ gem install tepra
 
+## Commands
+
+Commands are summarized as:
+
+| command          | description                                                               | note                       |
+|------------------|---------------------------------------------------------------------------|----------------------------|
+| tepra            | Print QR-code to King Jim's Tepra from command line or via REST interface |                            |
+
 ## Usage
 
-See online document:
-
-    $ tepra --help
+See online document with option `--help`.
 
 ## Contributing
 
