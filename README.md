@@ -31,6 +31,14 @@ Commands are summarized as:
 
 See online document with option `--help`.
 
+## Contributing
+
+1. Fork it ( https://github.com/[my-github-username]/tepra/fork )
+2. Create your feature branch (`git checkout -b my-new-feature`)
+3. Commit your changes (`git commit -am 'Add some feature'`)
+4. Push to the branch (`git push origin my-new-feature`)
+5. Create new Pull Request
+
 ## Revise the documentation and reflect to rubygem
 
 When you want to check the documentation, issue following.
