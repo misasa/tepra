@@ -73,6 +73,11 @@ class Tepra::CommandManager
     line should look like below."
 		opts.separator "    :printer: KING JIM SR5900P-NW"
 		opts.separator ""
+        opts.separator "    If you see timeout error, set `timeout' line on 
+    configration file `~/.teprarc' as below and raise the value.
+    Default setting is 5 seconds."
+  		opts.separator "    :timeout: 10"
+		opts.separator ""
 		opts.separator "    Issue following to have a test label."
 		opts.separator "    DOS> tepra print ''20110119154409-142-363,Heaven''"
         opts.separator ""
