@@ -1,8 +1,8 @@
-# Tepra
+# tepra
 
 Provide utilities for KING JIM's Tepra
 
-## Installation
+# Installation
 
 Add this line to your application's Gemfile:
 
@@ -19,7 +19,7 @@ Or install it yourself as:
     $ gem source -a http://dream.misasa.okayama-u.ac.jp/rubygems
     $ gem install tepra
 
-## Commands
+# Commands
 
 Commands are summarized as:
 
@@ -27,11 +27,11 @@ Commands are summarized as:
 |------------------|---------------------------------------------------------------------------|----------------------------|
 | tepra            | Print QR-code to King Jim's Tepra from command line or via REST interface |                            |
 
-## Usage
+# Usage
 
 See online document with option `--help`.
 
-## Contributing
+# Contributing
 
 1. Fork it ( https://github.com/[my-github-username]/tepra/fork )
 2. Create your feature branch (`git checkout -b my-new-feature`)
