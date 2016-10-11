@@ -52,6 +52,9 @@ class Tepra::Commands::PrintCommand < Tepra::Command
     datastring or datacsvfile, it prints multiple labels.  Note that
     by default it skips the first line.
 
+    This program tries to look for "SPC" on C drive.  If you install
+    "SPC" to D drive or else, configure %PATH% carefully.
+
 Synopsis:
     tepra print "ID,name"
     tepra print csvfile
