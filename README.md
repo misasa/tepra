@@ -2,6 +2,11 @@
 
 Provide utilities for KING JIM's Tepra
 
+# Dependency
+
+## [King Jim SPC](http://www.kingjim.co.jp/support/tepra/software "follow instruction")
+
+
 # Installation
 
 Add this line to your application's Gemfile:
