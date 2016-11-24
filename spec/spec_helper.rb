@@ -1,9 +1,9 @@
 require 'tepra'
 require 'tepra/runner'
-require 'simplecov'
-require 'simplecov-rcov'
-SimpleCov.formatter = SimpleCov::Formatter::RcovFormatter
-SimpleCov.start
+#require 'simplecov'
+#require 'simplecov-rcov'
+#SimpleCov.formatter = SimpleCov::Formatter::RcovFormatter
+#SimpleCov.start
 
 include Tepra
 Dir.glob("spec/support/**/*.rb") { |f| load f, true }

@@ -118,8 +118,12 @@ module Tepra
 	describe ".command_spc_print" do
 		subject{ Tepra.command_spc_print(csvfile_path, opts)}
 		let(:csvfile_path){ 'example/example-data-in.csv' }
-		let(:opts){ {:template_path => '/usr/lib/ruby/gems/1.9.1/gems/tepra-0.0.1/template/default.ptc'} }
+		let(:opts){ {} }
 		it { expect(subject).to include(File.expand_path(csvfile_path,'.', :output_type => :mixed)) }
+		context "with template_path" do
+			let(:opts){ {:template_path => '50x50ptc'} }
+			it { expect(subject).to include(File.expand_path(csvfile_path,'.', :output_type => :mixed)) }
+		end
 	end
 
 	# describe ".print_csvfile" do

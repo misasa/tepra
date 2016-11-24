@@ -51,7 +51,16 @@ module Tepra
 					expect(Tepra).to receive(:print).with("12345,test-sample",{}).and_return('expect')
 					get '/Format/Print', params
 				}
+			end
 
+			context "with params printer" do
+				let(:params){ {:UID => "12345", :NAME => "test-sample", :printer => printer, :template => template} }
+				let(:printer){ "SR5900-2" }
+				let(:template){ "50x50" }
+				it { 
+					expect(Tepra).to receive(:print).with("12345,test-sample",{:printer_name => printer, :template_path => template}).and_return('expect')
+					get '/Format/Print', params
+				}
 			end
 
 		end

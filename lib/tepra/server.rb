@@ -24,10 +24,15 @@ module Tepra
 		get '/Format/Print' do
 			id = params.delete("UID")
 			name = params.delete("NAME")
+			printer = params.delete("printer")
+			template = params.delete("template")
+			opts = {}
+			opts[:printer_name] = printer if printer
+			opts[:template_path] = template if template
 			if id && name
 				begin
 					data = "#{id},#{name}"
-					Tepra.print(data, params)
+					Tepra.print(data, opts)
 				rescue => ex
 				end
 			end
