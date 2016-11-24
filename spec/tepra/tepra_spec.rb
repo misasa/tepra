@@ -5,7 +5,7 @@ module Tepra
 	describe ".spc_path" do
 		subject{ Tepra.spc_path }
 		before do
-			Tepra.spc_path = nil
+		  Tepra.spc_path = nil
 		end
 		it { 
 			expect(Tepra).to receive(:find_spc_path).and_return('SPC_PATH')
@@ -29,12 +29,12 @@ module Tepra
 		it { expect(Tepra.spc_version).to include('10')}
 	end
 
-	describe ".print" do
-		subject{ Tepra.print(data_or_path, opts) }
-		let(:data_or_path){ 'example/example-data-in.csv' }
-		let(:opts){{}}
-		it { expect{subject}.not_to raise_error }
-	end
+#	describe ".print" do
+#		subject{ Tepra.print(data_or_path, opts) }
+#		let(:data_or_path){ 'example/example-data-in.csv' }
+#		let(:opts){{}}
+#		it { expect{subject}.not_to raise_error }
+#	end
 
 	describe ".printme" do
 		let(:opts){ { :address => address, :port => port } }
@@ -48,7 +48,7 @@ module Tepra
 		}
 	end
 
-	describe ".ip_address", :current => true do
+	describe ".ip_address" do
 		subject {Tepra.ip_address }
 		before do
 			puts subject
@@ -126,15 +126,30 @@ module Tepra
 		end
 	end
 
-	# describe ".print_csvfile" do
-	# 	let(:csvfile_path){ 'example/example-data-in.csv' }
-	# 	before do
-	# 		Tepra.spc_path = nil
-	# 		Tepra.print_csvfile(csvfile_path)
-	# 	end
-	# 	it { expect(nil).to be_nil }			
-	# end
+	describe ".print_csvfile" do
+	 	let(:csvfile_path){ 'example/example-data-in.csv' }
+	 	before do
+	 		Tepra.spc_path = nil
+	 		Tepra.print_csvfile(csvfile_path)
+	 	end
+	 	it { expect(nil).to be_nil }			
+	end
 
+    describe ".print" do
+      subject { Tepra.print(data, opts) }
+      let(:data){ "hello,world" }
+      let(:opts){ {} }
+      it { expect{subject}.not_to raise_error}
+      context "with printer_name" do
+        let(:opts){ {:printer_name => "KING JIM WR1000"} }
+        it { expect{subject}.not_to raise_error }
+      end
+      context "with printer_name and template" do
+        let(:opts){ {:printer_name => "KING JIM WR1000", :template => '50x80'} }
+        it { expect{subject}.not_to raise_error }
+      end
+    end
+    
 	describe ".app_root" do
 		it { expect(Tepra.app_root).to be_an_instance_of(Pathname) }
 	end
@@ -156,6 +171,20 @@ module Tepra
 		it { expect(Tepra.template_path(template_name)).to be_an_instance_of(Pathname) }
 	end
 
+    describe ".printers", :current => true do
+      subject { Tepra.printers }
+      before do
+        puts subject
+      end
+      it { expect(subject).not_to be_empty }
+    end
+    describe ".templates", :current => true do
+      subject { Tepra.templates }
+      before do
+        puts subject
+      end
+      it { expect(subject).not_to be_empty }
+    end
 
 	describe ".config" do
 		it { expect(Tepra.config).to be_an_instance_of(Hash) }

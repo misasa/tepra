@@ -11,10 +11,16 @@ module Tepra
 		end
 
 		post '/print' do
-			data = params.delete("data")
+		  data = params.delete("data")
+          printer = params.delete("printer")
+          template = params.delete("template")
+          opts = {}
+          opts[:printer_name] = printer if printer && printer != ""
+          opts[:template] = template if template && template != ""
+          puts params
 			if data
 				begin
-					Tepra.print(data, params)
+					Tepra.print(data, opts)
 				rescue => ex
 				end
 			end
@@ -28,12 +34,13 @@ module Tepra
 			template = params.delete("template")
 			opts = {}
 			opts[:printer_name] = printer if printer
-			opts[:template_path] = template if template
+			opts[:template] = template if template
 			if id && name
 				begin
-					data = "#{id},#{name}"
-					Tepra.print(data, opts)
+			      data = "#{id},#{name}"
+			      Tepra.print(data, opts)
 				rescue => ex
+                  puts ex
 				end
 			end
 			200

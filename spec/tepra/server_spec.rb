@@ -10,7 +10,7 @@ module Tepra
 			Tepra::Server
 		end
 
-		describe "get '/info'", :current => true do
+		describe "get '/info'" do
 			it {
 				get '/info'
 				expect(last_response).to be_ok
@@ -55,15 +55,15 @@ module Tepra
 
 			context "with params printer" do
 				let(:params){ {:UID => "12345", :NAME => "test-sample", :printer => printer, :template => template} }
-				let(:printer){ "SR5900-2" }
+				let(:printer){ "KING JIM WR1000" }
 				let(:template){ "50x50" }
 				it { 
-					expect(Tepra).to receive(:print).with("12345,test-sample",{:printer_name => printer, :template_path => template}).and_return('expect')
+					#expect(Tepra).to receive(:print).with("12345,test-sample",{:printer_name => printer, :template_path => template}).and_return('expect')
 					get '/Format/Print', params
 				}
 			end
 
-		end
+		en
 
 		describe "post '/print'" do
 			# before do

@@ -75,12 +75,22 @@ module Tepra
 
   	def self.default_printer
   		if config.has_key?(:printer)
-  		  	config[:printer]
+  		  config[:printer]
+        elsif config.has_key?(:printers)
+          config[:printers][0]
   		else
   			@default_printer
   		end
   	end
 
+    def self.printers
+      if config.has_key?(:printers)
+        config[:printers]
+      else
+        [config[:printer]]
+      end
+    end
+    
   	def self.default_port
   		if config.has_key?(:port)
   		  	config[:port]
@@ -103,6 +113,14 @@ module Tepra
 		template_dir + (File.basename(template_name, '.*') + ext)
 	end
 
+    def self.templates
+      ext = '.tpe'
+      ext = '.tpc' if spc_version =~ /^9/
+      pattern = '*' + ext 
+      files = Dir.glob(template_dir + pattern)
+      files.map{|file| File.basename(file, ".*")}
+    end
+    
 	def self.get_spc_path(version = 10)
 		drive = "C:/"
 		if (RUBY_PLATFORM.downcase =~ /cygwin/)
@@ -222,6 +240,7 @@ module Tepra
 			data = data_or_path
 		end
 
+
 		temp = Tempfile.new(['tepra','.csv'])
 		csvfile_path =  temp.path
 
@@ -245,7 +264,7 @@ module Tepra
 	end
 
 	def self.command_spc_print(csvfile_path, opts = {})
-		template_path = opts[:template_path] || self.template_path
+		template_path = opts[:template_path] || ( opts[:template] ? self.template_path(opts[:template]) : self.template_path )
 		printer_name = opts[:printer_name] || self.default_printer
 		csvfile_path = File.expand_path(csvfile_path,'.',:output_type => :mixed)
 		template_path = File.expand_path(template_path,'.',:output_type => :mixed)
