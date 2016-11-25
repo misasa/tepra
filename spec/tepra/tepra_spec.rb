@@ -126,29 +126,29 @@ module Tepra
 		end
 	end
 
-	describe ".print_csvfile" do
-	 	let(:csvfile_path){ 'example/example-data-in.csv' }
-	 	before do
-	 		Tepra.spc_path = nil
-	 		Tepra.print_csvfile(csvfile_path)
-	 	end
-	 	it { expect(nil).to be_nil }			
-	end
+#	describe ".print_csvfile" do
+#	 	let(:csvfile_path){ 'example/example-data-in.csv' }
+#	 	before do
+#	 		Tepra.spc_path = nil
+#	 		Tepra.print_csvfile(csvfile_path)
+#	 	end
+#	 	it { expect(nil).to be_nil }			
+#	end
 
-    describe ".print" do
-      subject { Tepra.print(data, opts) }
-      let(:data){ "hello,world" }
-      let(:opts){ {} }
-      it { expect{subject}.not_to raise_error}
-      context "with printer_name" do
-        let(:opts){ {:printer_name => "KING JIM WR1000"} }
-        it { expect{subject}.not_to raise_error }
-      end
-      context "with printer_name and template" do
-        let(:opts){ {:printer_name => "KING JIM WR1000", :template => '50x80'} }
-        it { expect{subject}.not_to raise_error }
-      end
-    end
+#    describe ".print" do
+#      subject { Tepra.print(data, opts) }
+#      let(:data){ "hello,world" }
+#      let(:opts){ {} }
+#      it { expect{subject}.not_to raise_error}
+#      context "with printer_name" do
+#        let(:opts){ {:printer_name => "KING JIM WR1000"} }
+#        it { expect{subject}.not_to raise_error }
+#      end
+#      context "with printer_name and template" do
+#        let(:opts){ {:printer_name => "KING JIM WR1000", :template => '50x80'} }
+#        it { expect{subject}.not_to raise_error }
+#      end
+#    end
     
 	describe ".app_root" do
 		it { expect(Tepra.app_root).to be_an_instance_of(Pathname) }
@@ -173,16 +173,35 @@ module Tepra
 
     describe ".printers", :current => true do
       subject { Tepra.printers }
-      before do
-        puts subject
+      let(:printer_1){ "KING JIM SR5900P" }
+      let(:printer_2){ "KING JIM WR1000" }
+      context "without printer" do
+        before do
+          Tepra.config = {}
+        end
+        it { expect(subject).to be_empty }
       end
-      it { expect(subject).not_to be_empty }
+      context "with empty printer" do
+        before do
+          Tepra.config = { printer: nil }
+        end
+        it { expect(subject).to be_empty }
+      end
+      context "with single printer" do
+        before do
+          Tepra.config = { printer: printer_1}
+        end
+        it { expect(subject).not_to be_empty }
+      end
+      context "with array" do
+        before do
+          Tepra.config = { printer: [printer_1, printer_2]}
+        end
+        it { expect(subject).to be_eql([printer_1, printer_2])}
+      end
     end
-    describe ".templates", :current => true do
+    describe ".templates" do
       subject { Tepra.templates }
-      before do
-        puts subject
-      end
       it { expect(subject).not_to be_empty }
     end
 
@@ -190,13 +209,22 @@ module Tepra
 		it { expect(Tepra.config).to be_an_instance_of(Hash) }
 	end
 
-	describe ".default_printer with config" do
+	describe ".default_printer with config", :current => true do
 		subject { Tepra.default_printer }
 		let(:printer_name) { 'Example Printer' }
-		before do
+        let(:printer_2) { 'Sub Printer'}
+        context "with single printer" do
+		  before do
 			Tepra.config = { printer: printer_name }
-		end
-		it { expect(Tepra.default_printer).to eql(printer_name) }
+		  end
+		  it { expect(subject).to eql(printer_name) }
+        end
+        context "with multiple printers" do
+          before do
+            Tepra.config = { printer: [printer_name, printer_2]}
+          end
+          it { expect(subject).to eql(printer_name)}
+        end
 	end
 
 

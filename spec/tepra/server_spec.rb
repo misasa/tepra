@@ -58,12 +58,12 @@ module Tepra
 				let(:printer){ "KING JIM WR1000" }
 				let(:template){ "50x50" }
 				it { 
-					#expect(Tepra).to receive(:print).with("12345,test-sample",{:printer_name => printer, :template_path => template}).and_return('expect')
+					expect(Tepra).to receive(:print).with("12345,test-sample",{:printer_name => printer, :template => template}).and_return('expect')
 					get '/Format/Print', params
 				}
 			end
 
-		en
+		end
 
 		describe "post '/print'" do
 			# before do

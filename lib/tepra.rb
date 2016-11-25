@@ -74,20 +74,20 @@ module Tepra
 	end
 
   	def self.default_printer
-  		if config.has_key?(:printer)
-  		  config[:printer]
-        elsif config.has_key?(:printers)
-          config[:printers][0]
+  		if !printers.empty?
+          printers[0]
   		else
   			@default_printer
   		end
   	end
 
     def self.printers
-      if config.has_key?(:printers)
-        config[:printers]
-      else
+      #return [] unless config.has_key?(:printer)
+      return [] unless config[:printer]
+      if config[:printer].instance_of?(String)
         [config[:printer]]
+      else
+        config[:printer]
       end
     end
     
