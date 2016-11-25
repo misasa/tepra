@@ -73,7 +73,14 @@ class Tepra::CommandManager
     line should look like below."
 		opts.separator "    :printer: KING JIM SR5900P-NW"
 		opts.separator ""
-        opts.separator "    If you see timeout error, set `timeout' line on 
+		opts.separator " When you want to control printers via one
+		host, list multiple printers to see a printer list in the
+		tepra server.  The configuration file `~/.teprarc' should look like below."
+		opts.separator "    :printer:"
+		opts.separator "      - KING JIM SR5900P"
+		opts.separator "      - KING JIM WR1000"
+		opts.separator ""
+        opts.separator "    If you see timeout error, set `timeout' line on
     configration file `~/.teprarc' as below and raise the value.
     Default setting is 5 seconds."
   		opts.separator "    :timeout: 10"
@@ -89,6 +96,7 @@ class Tepra::CommandManager
         opts.separator "    unspecified :  `server' is set"
 		opts.separator "    server      :  launch server to accept queue via REST interface as such below"
 		opts.separator "                :  http://localhost:8889/Format/Print?UID=12345678&NAME=MyGreatStone"
+		opts.separator "                :  http://localhost:8889/Format/Print?UID=12345678&NAME=MyGreatStone&printer=KING%20JIM%20WR1000%template=18x18"
 		opts.separator "    print       :  print QR-code with number and name"
 		opts.separator ""
     	opts.separator "Examples:"
@@ -98,6 +106,7 @@ class Tepra::CommandManager
 		opts.separator "    DOS> tepra server"
 		opts.separator "    darwin$ open http://localhost:8889/"
 		opts.separator "    darwin$ curl http://localhost:8889/Format/Print?UID=12345678&NAME=MyGreatStone"
+		opts.separator "    darwin$ curl http://localhost:8889/Format/Print?UID=12345678&NAME=MyGreatStone&printer=KING%20JIM%20WR1000%template=18x18"
 		opts.separator ""
 		opts.separator "See Also"
 		opts.separator "    tepra-duplicate --help"
