@@ -73,10 +73,11 @@ class Tepra::CommandManager
     line should look like below."
 		opts.separator "    :printer: KING JIM SR5900P-NW"
 		opts.separator ""
-		opts.separator " When you want to control printers via one
-		host, list multiple printers to see a printer list in the
+		opts.separator " When you want to control several printers by one
+		host, list the printers to see a printer list in the
 		tepra server.  The configuration file `~/.teprarc' should look like below."
 		opts.separator "    :printer:"
+		opts.separator "      - KING JIM SR5900P-A17F52"
 		opts.separator "      - KING JIM SR5900P"
 		opts.separator "      - KING JIM WR1000"
 		opts.separator ""
