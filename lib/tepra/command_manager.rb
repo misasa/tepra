@@ -73,9 +73,9 @@ class Tepra::CommandManager
     line should look like below."
 		opts.separator "    :printer: KING JIM SR5900P-NW"
 		opts.separator ""
-		opts.separator " When you want to control several printers by one
-		host, list the printers to see a printer list in the
-		tepra server.  The configuration file `~/.teprarc' should look like below."
+		opts.separator "    When you want to control several printers by one
+    host, list the printers to see a printer list in the
+    tepra server.  The configuration file `~/.teprarc' should look like below."
 		opts.separator "    :printer:"
 		opts.separator "      - KING JIM SR5900P-A17F52"
 		opts.separator "      - KING JIM SR5900P"
@@ -119,8 +119,8 @@ class Tepra::CommandManager
 		opts.separator "    Licensed under the same terms as Ruby"
     	opts.separator ""
         # opts.separator "  #{BUILTIN_COMMANDS.join(', ')}"
-    #			opts.separator "Commands:"
-    #			opts.separator ""	
+        # opts.separator "Commands:"
+        # opts.separator ""
         # opts.separator "  tepra"
     	# opts.separator "  tepra print csvfile"
         # opts.separator "  tepra server"
@@ -174,7 +174,7 @@ class Tepra::CommandManager
 		cmd = find_command cmd_name
 		cmd.invoke_with_build_args args, build_args
 	rescue OptionParser::InvalidOption => ex
-		say "ERROR: #{ex}. See '#{program_name} --help'." 
+		say "ERROR: #{ex}. See '#{program_name} --help'."
   end
 
   def process_args_org(args, build_args=nil)
@@ -220,4 +220,3 @@ class Tepra::CommandManager
  	  	Tepra::Commands.const_get(const_name).new
   	end
 end
-
