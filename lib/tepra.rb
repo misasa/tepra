@@ -26,6 +26,7 @@ module Tepra
 
 	@default_printer = "KING JIM SR3900P"
 	@default_port = 8889
+    @default_template = 'default'
 	@default_timeout = 5
 	DEFAULT_CONFIG = {:printer => @default_printer, :port => @default_port, :timeout => @default_timeout }
 	def self.load_config
@@ -99,6 +100,14 @@ module Tepra
   		end
   	end
 
+    def self.default_template
+      if config.has_key?(:template)
+        config[:template]
+      else
+        @default_template
+      end
+    end
+    
   	def self.default_timeout
   		if config.has_key?(:timeout)
   			config[:timeout]
@@ -107,7 +116,7 @@ module Tepra
   		end
   	end
 
-	def self.template_path(template_name = 'default')
+	def self.template_path(template_name = self.default_template)
 		ext = '.tpe'
 		ext = '.tpc' if spc_version =~ /^9/
 		template_dir + (File.basename(template_name, '.*') + ext)

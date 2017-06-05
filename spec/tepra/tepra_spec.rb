@@ -29,11 +29,32 @@ module Tepra
 		it { expect(Tepra.spc_version).to include('10')}
 	end
 
-#	describe ".print" do
-#		subject{ Tepra.print(data_or_path, opts) }
-#		let(:data_or_path){ 'example/example-data-in.csv' }
-#		let(:opts){{}}
+    describe ".default_template" do
+      subject { Tepra.default_template }
+      it { expect(subject).to eql('default')}
+      context "with template in config" do
+        before do
+          Tepra.config = { template: template }
+        end  
+        let(:template){ '50x80' }
+        it { expect(subject).to eql('50x80')}
+      end
+      after do
+        Tepra.config = nil
+      end
+    end
+    
+#	describe ".print", :current => true do
+#	  subject{ Tepra.print(data_or_path, opts) }
+#		let(:data_or_path){ 'hello,world' }
+#		let(:opts){{ printer_name: 'KING JIM WR1000'}}
+#       before do
+#          Tepra.config = { template: '50x80'}
+#        end
 #		it { expect{subject}.not_to raise_error }
+#        after do
+#          Tepra.config = nil
+#        end
 #	end
 
 	describe ".printme" do
@@ -171,7 +192,7 @@ module Tepra
 		it { expect(Tepra.template_path(template_name)).to be_an_instance_of(Pathname) }
 	end
 
-    describe ".printers", :current => true do
+    describe ".printers" do
       subject { Tepra.printers }
       let(:printer_1){ "KING JIM SR5900P" }
       let(:printer_2){ "KING JIM WR1000" }
@@ -209,7 +230,7 @@ module Tepra
 		it { expect(Tepra.config).to be_an_instance_of(Hash) }
 	end
 
-	describe ".default_printer with config", :current => true do
+	describe ".default_printer with config" do
 		subject { Tepra.default_printer }
 		let(:printer_name) { 'Example Printer' }
         let(:printer_2) { 'Sub Printer'}
