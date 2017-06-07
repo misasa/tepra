@@ -33,7 +33,8 @@ listed in `Control Panel / Devices and Printers`.
     :template: 18x18
 
 When you want to choose a printer and paper size from list on `Tepra
-Server` interface, have a configuration file as shown below.
+Server` interface, have a configuration file as shown below.  The first
+printer and the first paper size serve as default.
 
     :printer:
       - KING JIM WR1000
