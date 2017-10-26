@@ -7,8 +7,9 @@
           %span.glyphicon.glyphicon-print
     .input-group
       %select{:name => 'printer'}
-        - Tepra.printers.each do |v|
-          %option{:name => v, :value => v}="#{v}"
+        - Tepra.printer_hashs.each do |v|
+          %option{:name => v[:name], :value => v[:name]}="#{( v.has_key?(:nickname) ? v[:nickname] : v[:name] ) }"
       %select{:name => 'template'}
+        %option{:value => ""}=""
         - Tepra.templates.each do |v|
           %option{:name => v, :value => v}="#{v}"

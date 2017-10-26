@@ -17,8 +17,29 @@ module Tepra
 			}
 		end
 
+        describe "get '/printers.json'" do
+          it {
+          	get '/printers.json'
+          	expect(last_response).to be_ok
+          }          
+#          after do
+#          	puts last_response.body
+#          end
+        end
+
+        describe "get '/templates.json'" do
+          it {
+          	get '/templates.json'
+          	expect(last_response).to be_ok
+          }
+#          after do
+#          	puts last_response.body
+#          end
+        end
+
 		describe "get '/'" do
 			before do
+				Tepra.config = { printer: [{name: "KING JIM SR5900P", nickname: "SR5900P@121"}, {name:"KING JIM WR1000"}] }
 				get '/', params
 			end
 
@@ -34,8 +55,8 @@ module Tepra
 				let(:params){ {:data => 'hello,world'} }
 				it { expect(last_response).to be_ok }
 			end
-
 		end
+
 
 		describe "get '/Format/Print'" do
 			context "without params" do
@@ -53,12 +74,31 @@ module Tepra
 				}
 			end
 
-			context "with params printer" do
+			context "with params printer and template" do
 				let(:params){ {:UID => "12345", :NAME => "test-sample", :printer => printer, :template => template} }
 				let(:printer){ "KING JIM WR1000" }
 				let(:template){ "50x50" }
 				it { 
 					expect(Tepra).to receive(:print).with("12345,test-sample",{:printer_name => printer, :template => template}).and_return('expect')
+					get '/Format/Print', params
+				}
+			end
+
+			context "with params printer and without template" do
+				let(:params){ {:UID => "12345", :NAME => "test-sample", :printer => printer} }
+				let(:printer){ "KING JIM WR1000" }
+				it { 
+					expect(Tepra).to receive(:print).with("12345,test-sample",{:printer_name => printer}).and_return('expect')
+					get '/Format/Print', params
+				}
+			end
+
+
+			context "with params printer and empty template" do
+				let(:params){ {:UID => "12345", :NAME => "test-sample", :printer => printer, :template => ""} }
+				let(:printer){ "KING JIM WR1000" }
+				it { 
+					expect(Tepra).to receive(:print).with("12345,test-sample",{:printer_name => printer}).and_return('expect')
 					get '/Format/Print', params
 				}
 			end

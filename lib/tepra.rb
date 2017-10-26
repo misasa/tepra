@@ -82,13 +82,41 @@ module Tepra
   		end
   	end
 
+    # def self.printers
+    #   return [] unless config[:printer]
+    #   if config[:printer].instance_of?(String)
+    #     [config[:printer]]
+    #   elsif config[:printer].instance_of?(Hash)
+    #   	config[:printer][:name]
+    #   elsif config[:printer].instance_of?(Array) && config[:printer][0].instance_of?(Hash)
+    #     config[:printer].map{|h| h[:name]}
+    #   else
+    #     config[:printer]
+    #   end
+    # end
+
     def self.printers
+      printer_names
+    end
+
+    def self.printer_names
+      printer_hashs.map{|h| h[:name] }
+    end
+
+    def self.printer_hashs
       #return [] unless config.has_key?(:printer)
       return [] unless config[:printer]
-      if config[:printer].instance_of?(String)
-        [config[:printer]]
-      else
-        config[:printer]
+      case config[:printer]
+        when String
+          [{name: config[:printer]}]
+        when Hash
+          [config[:printer]]
+        when Array
+      	if config[:printer][0].instance_of?(String)
+      	  config[:printer].map{|name| {name: name} }
+      	else
+      	  config[:printer]
+      	end
       end
     end
     
@@ -128,6 +156,10 @@ module Tepra
       pattern = '*' + ext 
       files = Dir.glob(template_dir + pattern)
       files.map{|file| File.basename(file, ".*")}
+    end
+
+    def self.template_hashs
+    	templates.map{|template| {name: template }}
     end
     
 	def self.get_spc_path(version = 10)
@@ -272,8 +304,20 @@ module Tepra
 		temp
 	end
 
+    def self.select_template(opts = {})
+      path = self.template_path
+      if opts[:printer_name]
+      	index = self.printer_names.index(opts[:printer_name])
+      	path = self.template_path(self.printer_hashs[index][:template]) if index && self.printer_hashs[index][:template]
+      end
+      path = self.template_path(opts[:template]) if opts[:template]
+      path = opts[:template_path] if opts[:template_path]
+      path
+    end
+
 	def self.command_spc_print(csvfile_path, opts = {})
-		template_path = opts[:template_path] || ( opts[:template] ? self.template_path(opts[:template]) : self.template_path )
+		#template_path = opts[:template_path] || ( opts[:template] ? self.template_path(opts[:template]) : self.template_path )
+		template_path = select_template(opts)
 		printer_name = opts[:printer_name] || self.default_printer
 		csvfile_path = File.expand_path(csvfile_path,'.',:output_type => :mixed)
 		template_path = File.expand_path(template_path,'.',:output_type => :mixed)

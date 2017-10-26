@@ -141,9 +141,17 @@ module Tepra
 		let(:csvfile_path){ 'example/example-data-in.csv' }
 		let(:opts){ {} }
 		it { expect(subject).to include(File.expand_path(csvfile_path,'.', :output_type => :mixed)) }
-		context "with template_path" do
+		context "with valid template_path" do
 			let(:opts){ {:template_path => '50x50ptc'} }
 			it { expect(subject).to include(File.expand_path(csvfile_path,'.', :output_type => :mixed)) }
+		end
+		context "without template_path" do
+			let(:opts){ {:printer_name => "KING JIM SR5900P"} }
+			it { expect(subject).to include(File.expand_path(csvfile_path,'.', :output_type => :mixed)) }
+		end
+
+		after do
+		  puts subject
 		end
 	end
 
@@ -179,17 +187,59 @@ module Tepra
 		it { expect(Tepra.template_dir).to be_an_instance_of(Pathname) }
 	end
 
+    describe ".select_template" do
+      subject {Tepra.select_template(opts)}
+      context "without opts" do
+      	it {expect(Tepra.select_template.to_s).to include(Tepra.default_template) }
+      end
+
+      context "with opts[:template_path]" do
+      	let(:opts){ {template_path:template_path} }
+      	let(:template_path){"/path/to/template/example.tpe"}
+      	it {expect(subject.to_s).to be_eql(template_path) }
+      end
+
+      context "with opts[:template]" do
+      	let(:opts){ {template:template} }
+      	let(:template){"50x67"}
+      	it {expect(subject.to_s).to include(template) }
+      end
+
+      context "with opts[:printer_name]" do
+      	before do
+      	  Tepra.config = {template: default_template, printer: [{name: printer_1, template: template_1},{name: printer_2, template: template_2},{name: printer_3}]}
+      	end
+      	#let(:opts){ {printer_name: printer_1} }
+        let(:printer_1){"KING JIM WR1000"}
+      	let(:template_1){"50x80"}
+        let(:printer_2){"KING JIM SR5900P"}
+      	let(:template_2){"12x12"}
+        let(:printer_3){"KING JIM SR3900P"}
+        let(:default_template){"12x20"}   	
+      	it {expect(Tepra.select_template({printer_name: printer_1}).to_s).to include(template_1) }
+      	it {expect(Tepra.select_template({printer_name: printer_2}).to_s).to include(template_2) }
+      	it {expect(Tepra.select_template({printer_name: printer_3}).to_s).to include(default_template) }
+      	after do
+      		Tepra.config = nil
+      	end
+      end
+
+
+    end
+
+
 	describe ".template_path without arg" do
 		it { expect(Tepra.template_path).to be_an_instance_of(Pathname) }
 	end
 
 	describe ".template_path with arg" do
+		subject { Tepra.template_path(template_name) }
 		let(:template_name){ 'default' }
 		before do
 			template_name
 		end
-		it { expect(Tepra.template_path(template_name).to_s).to include(template_name)}
-		it { expect(Tepra.template_path(template_name)).to be_an_instance_of(Pathname) }
+		it { expect(subject.to_s).to include(template_name)}
+		it { expect(subject).to be_an_instance_of(Pathname) }
 	end
 
     describe ".printers" do
@@ -213,6 +263,7 @@ module Tepra
           Tepra.config = { printer: printer_1}
         end
         it { expect(subject).not_to be_empty }
+        it { expect(subject).to be_eql([printer_1]) }        
       end
       context "with array" do
         before do
@@ -220,7 +271,67 @@ module Tepra
         end
         it { expect(subject).to be_eql([printer_1, printer_2])}
       end
+      context "with single hash" do
+      	before do
+      	  Tepra.config = { printer: {name: printer_1}}
+      	end
+      	it { expect(subject).to be_eql([printer_1])}
+      end
+      context "with hash array" do
+      	before do
+      	  Tepra.config = { printer: [{name: printer_1}, {name: printer_2}]}
+      	end
+      	it { expect(subject).to be_eql([printer_1, printer_2])}
+      end
     end
+
+
+    describe ".printer_hashs" do
+      subject { Tepra.printer_hashs }
+      let(:printer_1){ "KING JIM SR5900P" }
+      let(:printer_2){ "KING JIM WR1000" }
+      let(:printer_3){ {name: "KING SR5900P"} }
+      let(:printer_4){ {name: "KING JIM WR1000"} }
+
+      context "without printer" do
+        before do
+          Tepra.config = {}
+        end
+        it { expect(subject).to be_empty }
+      end
+      context "with empty printer" do
+        before do
+          Tepra.config = { printer: nil }
+        end
+        it { expect(subject).to be_empty }
+      end
+      context "with single printer" do
+        before do
+          Tepra.config = { printer: printer_1}
+        end
+        it { expect(subject).not_to be_empty }
+        it { expect(subject).to be_eql([{name: printer_1}]) }        
+      end
+      context "with array" do
+        before do
+          Tepra.config = { printer: [{name: printer_1}, {name: printer_2}]}
+        end
+        it { expect(subject).to be_eql([{name: printer_1}, {name: printer_2}])}
+      end
+      context "with single hash" do
+      	before do
+      	  Tepra.config = { printer: printer_3 }
+      	end
+      	it { expect(subject).to be_eql([printer_3])}
+      end
+      context "with hash array" do
+      	before do
+      	  Tepra.config = { printer: [printer_3, printer_4]}
+      	end
+      	it { expect(subject).to be_eql([printer_3, printer_4])}
+      end
+    end
+
     describe ".templates" do
       subject { Tepra.templates }
       it { expect(subject).not_to be_empty }
