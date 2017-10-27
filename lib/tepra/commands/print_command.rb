@@ -10,7 +10,7 @@ class Tepra::Commands::PrintCommand < Tepra::Command
 		end
 
 		add_option('-t', '--template TEMPLATEFILE',
-						"Specify template path" ) do |template_path, options|
+						"Specify template path. Preinstalled templates are #{Tepra.template_dir}/{#{Tepra.templates.join(",")}}.tpe." ) do |template_path, options|
 			options[:template_path] = template_path
 		end
 
