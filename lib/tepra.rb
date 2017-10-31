@@ -150,16 +150,19 @@ module Tepra
 		template_dir + (File.basename(template_name, '.*') + ext)
 	end
 
-    def self.templates
+    def self.templates(opts = {})
       ext = '.tpe'
       ext = '.tpc' if spc_version =~ /^9/
-      pattern = '*' + ext 
+      pattern = '*' + ext
+      ts = []
       files = Dir.glob(template_dir + pattern)
-      files.map{|file| File.basename(file, ".*")}
+      ts = files.map{|file| File.basename(file, ".*")}
+      ts = ts - opts[:omit] if opts[:omit]
+      ts
     end
 
-    def self.template_hashs
-    	templates.map{|template| {name: template }}
+    def self.template_hashs(opts = {})
+    	templates(opts).map{|template| {name: template }}
     end
     
 	def self.get_spc_path(version = 10)

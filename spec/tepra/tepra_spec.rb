@@ -335,6 +335,13 @@ module Tepra
     describe ".templates" do
       subject { Tepra.templates }
       it { expect(subject).not_to be_empty }
+      it { expect(subject).to include('default') }      
+      context "with omit option" do
+      	subject { Tepra.templates(opts) }
+        let(:opts){ {:omit => ['default'] } }
+      	it { expect(subject).not_to be_empty }
+      	it { expect(subject).not_to include('default') }      	
+      end
     end
 
 	describe ".config" do
