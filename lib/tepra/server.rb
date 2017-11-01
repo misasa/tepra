@@ -17,7 +17,7 @@ module Tepra
         end
 
         get '/templates.json' do
-          data = Tepra.template_hashs
+          data = Tepra.template_hashs(:omit => ['default'])
           json data
         end
 

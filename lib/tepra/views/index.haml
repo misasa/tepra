@@ -11,5 +11,5 @@
           %option{:name => v[:name], :value => v[:name]}="#{( v.has_key?(:nickname) ? v[:nickname] : v[:name] ) }"
       %select{:name => 'template'}
         %option{:value => ""}=""
-        - Tepra.templates.each do |v|
+        - Tepra.templates(:omit => ['default']).each do |v|
           %option{:name => v, :value => v}="#{v}"

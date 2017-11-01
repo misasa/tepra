@@ -27,14 +27,14 @@ module Tepra
 #          end
         end
 
-        describe "get '/templates.json'" do
+        describe "get '/templates.json'", :current => true do
           it {
           	get '/templates.json'
           	expect(last_response).to be_ok
           }
-#          after do
-#          	puts last_response.body
-#          end
+          after do
+          	puts last_response.body
+          end
         end
 
 		describe "get '/'" do
