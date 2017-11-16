@@ -15,7 +15,7 @@ class Tepra::Commands::PrintCommand < Tepra::Command
 		end
 
 		add_option('-p', '--printer PRINTER',
-						'Specify printer name (ex. "KING JIM SR3900P")') do |printer_name, options|
+						"Specify printer name. Available printers are {#{Tepra.printers.join(",")}}.") do |printer_name, options|
 			options[:printer_name] = printer_name
 		end
 
@@ -86,6 +86,7 @@ Implementation:
 		args = options.delete(:args)
 		raise OptionParser::InvalidArgument.new('specify DATA_or_DATAFILE') if args.empty?
 		arg = args.shift
+		options[:printer_name] = Tepra.default_printer unless options[:printer_name]
 		if options[:dry_run]
 			csvfile_path = Tepra.create_data_file(arg, options)
 			command = Tepra.command_spc_print(csvfile_path, options)

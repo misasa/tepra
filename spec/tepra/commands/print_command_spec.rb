@@ -39,12 +39,28 @@ module Tepra::Commands
 			end
 
 			context "without printer option", :current => true do
-				let(:options) { {:args => [csvfile_path], :dry_run => true } }
+				let(:options) { {:args => [csvfile_path] } }
 				let(:csvfile_path) { 'example/example-data.csv' }
+				let(:printer){ 'Example Printer' }
 				before do
-					Tepra.config = { printer: "Example Printer" }
+					Tepra.config = { printer: printer }
 				end
-				it { expect{subject}.not_to raise_error }
+				it { expect(Tepra).to receive(:print).with(csvfile_path,{:printer_name => printer}).and_return('expect') }
+				after { subject }
+				#it { expect{subject}.not_to raise_error }
+			end
+
+
+			context "with printer option", :current => true do
+				let(:options) { {:args => [csvfile_path], :printer_name => printer} }
+				let(:csvfile_path) { 'example/example-data.csv' }
+				let(:printer){ 'Example Printer' }
+				before do
+					Tepra.config = { printer: printer }
+				end
+				it { expect(Tepra).to receive(:print).with(csvfile_path,{:printer_name => printer}).and_return('expect') }
+				after { subject }
+				#it { expect{subject}.not_to raise_error }
 			end
 
 			context "with valid csvfile_path" do
