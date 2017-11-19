@@ -128,12 +128,16 @@ module Tepra
   		end
   	end
 
-    def self.default_template
+    def self.default_template(printer = nil)
+      template = @default_template
       if config.has_key?(:template)
-        config[:template]
-      else
-        @default_template
+        template = config[:template]
       end
+      if printer
+      	index = self.printer_names.index(printer)
+      	template = self.printer_hashs[index][:template] if index && self.printer_hashs[index][:template]
+      end
+      template
     end
     
   	def self.default_timeout
@@ -309,12 +313,20 @@ module Tepra
 
     def self.select_template(opts = {})
       path = self.template_path
+      p "default #{path}"
       if opts[:printer_name]
       	index = self.printer_names.index(opts[:printer_name])
       	path = self.template_path(self.printer_hashs[index][:template]) if index && self.printer_hashs[index][:template]
+        p "opts[:printer_name]:#{opts[:printer_name]} path:#{path}"
       end
-      path = self.template_path(opts[:template]) if opts[:template]
-      path = opts[:template_path] if opts[:template_path]
+      if opts[:template]
+        path = self.template_path(opts[:template])
+        p "opts[:template]:#{opts[:template]} path:#{path}"
+      end
+      if opts[:template_path]
+        path = opts[:template_path]
+        p "opts[:template_path]:#{opts[:template_path]} path:#{path}"
+      end
       path
     end
 

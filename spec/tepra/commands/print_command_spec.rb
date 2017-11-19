@@ -4,7 +4,7 @@ module Tepra::Commands
 	describe PrintCommand do
 	  let(:cmd){ PrintCommand.new }
 	  before do
-		allow(Tepra).to receive(:template_path).and_return('/path/to/template.spc')
+		#allow(Tepra).to receive(:template_path).and_return('/path/to/template.spc')
 	  end
 
       describe "#show_help", :show_help => true do
@@ -40,18 +40,19 @@ module Tepra::Commands
 
 			context "without printer option", :current => true do
 				let(:options) { {:args => [csvfile_path] } }
-				let(:csvfile_path) { 'example/example-data.csv' }
+				let(:csvfile_path) { 'aaa,bbb' }
 				let(:printer){ 'Example Printer' }
 				before do
-					Tepra.config = { printer: printer }
+				  #	Tepra.config = { printer: printer }
+                  p Tepra.config
 				end
-				it { expect(Tepra).to receive(:print).with(csvfile_path,{:printer_name => printer}).and_return('expect') }
-				after { subject }
-				#it { expect{subject}.not_to raise_error }
+				#it { expect(Tepra).to receive(:print).with(csvfile_path,{:printer_name => printer}).and_return('expect') }
+				#after { subject }
+				it { expect{subject}.not_to raise_error }
 			end
 
 
-			context "with printer option", :current => true do
+			context "with printer option", :current => false do
 				let(:options) { {:args => [csvfile_path], :printer_name => printer} }
 				let(:csvfile_path) { 'example/example-data.csv' }
 				let(:printer){ 'Example Printer' }
@@ -74,7 +75,9 @@ module Tepra::Commands
 				let(:csvfile_path) { 'example/example-data-.csv' }
 				it { expect{subject}.not_to raise_error }
 			end
-
+            after do
+              Tepra.config = nil
+            end
 		end
 	end
 end

@@ -31,6 +31,9 @@ module Tepra
 
     describe ".default_template" do
       subject { Tepra.default_template }
+      before do
+        Tepra.config = {}
+      end
       it { expect(subject).to eql('default')}
       context "with template in config" do
         before do
@@ -38,6 +41,33 @@ module Tepra
         end  
         let(:template){ '50x80' }
         it { expect(subject).to eql('50x80')}
+      end
+      context "with printer which has template" do
+        subject { Tepra.default_template(printer_1)}
+        before do
+          Tepra.config = { template: template, printer: [{name: printer_1, template: template_1},{name: printer_2, template: template_2},{name: printer_3}] }
+        end  
+        let(:template){ '18x18' }
+        let(:printer_1){"KING JIM WR1000"}
+      	let(:template_1){"50x80"}
+        let(:printer_2){"KING JIM SR5900P"}
+      	let(:template_2){"12x12"}
+        let(:printer_3){"KING JIM SR3900P"}
+        let(:default_template){"12x20"}   	
+        it { expect(subject).to eql(template_1)}
+      end
+      context "with printer which does not have template" do
+        before do
+          Tepra.config = { template: template, printer: [{name: printer_1},{name: printer_2, template: template_2},{name: printer_3}] }
+        end  
+        let(:template){ '18x18' }
+        let(:printer_1){"KING JIM WR1000"}
+      	let(:template_1){"50x80"}
+        let(:printer_2){"KING JIM SR5900P"}
+      	let(:template_2){"12x12"}
+        let(:printer_3){"KING JIM SR3900P"}
+        let(:default_template){"12x20"}   	
+        it { expect(subject).to eql(template)}
       end
       after do
         Tepra.config = nil
