@@ -27,7 +27,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "geminabox", "~> 0.12"
   spec.add_development_dependency "rspec", "3.0.0"
   spec.add_development_dependency "turnip", "1.2.1"  
-  spec.add_development_dependency "rack-test"
+  spec.add_development_dependency "rack-test", "0.7.0"
 #  spec.add_development_dependency "simplecov-rcov", "~> 0.2.3"
 #  spec.add_development_dependency "rspec_junit_formatter", "~> 0.2.0"    
 end
