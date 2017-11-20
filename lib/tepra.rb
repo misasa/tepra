@@ -313,19 +313,19 @@ module Tepra
 
     def self.select_template(opts = {})
       path = self.template_path
-      p "default #{path}"
+      p "default #{path}" if opts[:verbose]
       if opts[:printer_name]
       	index = self.printer_names.index(opts[:printer_name])
       	path = self.template_path(self.printer_hashs[index][:template]) if index && self.printer_hashs[index][:template]
-        p "opts[:printer_name]:#{opts[:printer_name]} path:#{path}"
+        p "opts[:printer_name]:#{opts[:printer_name]} path:#{path}"  if opts[:verbose]
       end
       if opts[:template]
         path = self.template_path(opts[:template])
-        p "opts[:template]:#{opts[:template]} path:#{path}"
+        p "opts[:template]:#{opts[:template]} path:#{path}"  if opts[:verbose]
       end
       if opts[:template_path]
         path = opts[:template_path]
-        p "opts[:template_path]:#{opts[:template_path]} path:#{path}"
+        p "opts[:template_path]:#{opts[:template_path]} path:#{path}"  if opts[:verbose]
       end
       path
     end

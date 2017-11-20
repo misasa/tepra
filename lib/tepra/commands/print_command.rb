@@ -2,7 +2,7 @@ require 'tepra/command'
 
 class Tepra::Commands::PrintCommand < Tepra::Command
 	def initialize
-		super 'print', 'Print label with QR-code', :set => 1, :template => Tepra.template_path, :skip_header => true, :printer => Tepra.default_printer
+		super 'print', 'Print label with QR-code', :set => 1, :skip_header => true, :printer => Tepra.default_printer
 
 		add_option('-s', '--set NUMBER',
 						'Specify number of labels') do |set, options|
@@ -82,7 +82,8 @@ Implementation:
 	end
 
 	def execute
-		original_options = options.clone
+	    original_options = options.clone
+        #p original_options
 		args = options.delete(:args)
 		raise OptionParser::InvalidArgument.new('specify DATA_or_DATAFILE') if args.empty?
 		arg = args.shift
