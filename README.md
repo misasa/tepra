@@ -32,25 +32,9 @@ listed in `Control Panel / Devices and Printers`.
     :timeout: 30
     :template: 18x18
 
-When you want to choose a printer and paper size from list on `Tepra
-Server` interface, have a configuration file as shown below.  The first
-printer and the first paper size serve as default.
+To print a label with barcode, issue following command.
 
-    :printer:
-      - KING JIM WR1000
-      - KING JIM SR5900P-A17F52@126 # on shlef 126
-      - KING JIM SR3900P
-      - KING JIM SR5900P-A123E5@127 # with DREAM-Surface-2016
-      - KING JIM SR5900P-A0EA7E@125 # @ SIMS 5F
-      - KING JIM SR5900P-A0EA7A@121 # @ SIMS 5F
-    :timeout: 30
-    # :template: 18x18
-    # :template: 18x50
-    # :template: 18x290
-    # :template: 24x50
-    # :template: 36x50
-    :template: 50x80
-    # :template: 100x100
+    tepra print "20171117134145-914053,TS-SJ-54"
 
 # Commands
 
@@ -74,10 +58,10 @@ See online document with option `--help`.
 
 ## Revise the documentation and reflect to rubygem
 
-When you want to check the documentation, issue following.
+Issue following to test your revision.
 
     $ cd ~/devel-godigo/tepra/
-    $ bundle exec rspec spec/tepra/commands/print_command_spec.rb --tag show_help:true
+    $ bundle exec rspec
 
 After revision, issue following.
 

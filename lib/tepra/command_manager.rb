@@ -59,7 +59,7 @@ class Tepra::CommandManager
     interface"
 		opts.separator ""
 		opts.separator "Description:"
-		opts.separator "    This gem is part of Medusa and supports Ruby for Windows only
+		opts.separator "    This gem is not part of Medusa and supports Ruby for Windows only
     (http://rubyinstaller.org/downloads/).  Install this gem and
     update by following commands."
 		opts.separator ""
@@ -69,20 +69,41 @@ class Tepra::CommandManager
 		opts.separator ""
 		opts.separator "    Setup this computer and make sure you can print something from
     `SPC 10'.  Identify name of the printer on `SPC 10' such as `KING
-    JIM SR5900P-NW'.  Put it to a configuration file `~/.teprarc'.  A
-    line should look like below."
+    JIM SR5900P-NW'.  Technically the name is one listed on Windows'
+    Control Panel.  Put it to a configuration  file `~/.teprarc'.
+    A line should look like below."
 		opts.separator "    :printer: KING JIM SR5900P-NW"
 		opts.separator ""
 		opts.separator "    When you want to control several printers by one
     host, list the printers to see a printer list in the
-    tepra server.  The configuration file `~/.teprarc' should look like below."
+    tepra server.  An element :name: corresponds to name that
+    is the listed on Windows' Control Panel.  An element :nickname:
+    is an alias that is shown on popup menu on tepra server.
+    An example of a configuration file `~/.teprarc' is shown below."
 		opts.separator "    :printer:"
-		opts.separator "      - KING JIM SR5900P-A17F52"
-		opts.separator "      - KING JIM SR5900P"
-		opts.separator "      - KING JIM WR1000"
+		opts.separator "      - :name: KING JIM SR3900P"
+		opts.separator "        :nickname: SR3900P@126"
+		opts.separator "        :template: 18x50"
+		opts.separator "      - :name: KING JIM SR5900P-A17F52 # 2016-09-01 (keep awake) on shelf"
+		opts.separator "        :nickname: SR5900P@126"
+		opts.separator "      - :name: KING JIM SR5900P-A1C8F9 # 2017-09-06 (keep awake) SIMS ims-5f"
+		opts.separator "        :nickname: SR5900P@125"
+		opts.separator "      - :name: KING JIM SR5900P-A1C8FA # 2017-09-06 (keep awake) SIMS ims-1270"
+		opts.separator "        :nickname: SR5900P@121"
+		opts.separator "      - :name: KING JIM WR1000"
+		opts.separator "        :nickname: WR1000@126"
+		opts.separator "        :template: 50x80"
+		opts.separator "      - :name: KING JIM SR5900P-A1C8F8 # 2017-09-06 (keep awake) with Surface-2016"
+		opts.separator "        :nickname: SR5900P@127"
+		opts.separator "      - :name: KING JIM SR5900P-A123E5 # 2015-09-01 (auto power off) on TK's office"
+		opts.separator "        :nickname: SR5900P@201"
+		opts.separator "      - :name: KING JIM SR5900P-A0EA7E # 2015-09-01 (auto power off) on Tsutom's office"
+		opts.separator "        :nickname: SR5900P@212"
+		opts.separator "      # - :name: KING JIM SR5900P-A0EA7A # 2015-09-01 (auto power off)"
+		opts.separator "    :template: 18x18"
 		opts.separator ""
         opts.separator "    If you see timeout error, set `timeout' line on
-    configration file `~/.teprarc' as below and raise the value.
+    configuration file `~/.teprarc' as below and raise the value.
     Default setting is 5 seconds."
   		opts.separator "    :timeout: 10"
 		opts.separator ""
