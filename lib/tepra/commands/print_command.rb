@@ -63,12 +63,14 @@ Options:
     --no-skip-header:  Print first line
 
 Example:
-	$ echo -e 'ID,Name\\n0000-01,KLB1' > my-great-list.csv
-	$ tepra print my-great-list.csv
+	CMD> tepra print "0000-01,test-1"
 
-	$ tepra print "ID,Name\\n0000-01,test"
-	$ tepra print "0000-01,test-1\\n0000-02,test-2" --no-skip-header
-	$ tepra print "0000-01,test-1"
+	cygwin$ echo -e 'ID,Name\\n0000-01,KLB1' > my-great-list.csv
+	cygwin$ tepra print my-great-list.csv
+
+	cygwin$ tepra print "ID,Name\\n0000-01,test"
+	cygwin$ tepra print "0000-01,test-1\\n0000-02,test-2" --no-skip-header
+	cygwin$ tepra print "0000-01,test-1"
 
 See also:
     orochi-label
