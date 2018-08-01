@@ -73,7 +73,7 @@ After revision, issue following.
     $ cd ~/devel-godigo/tepra/
     $ rake build
 
-You see new gem on `pkg/tepra-0.0.8.gem`.  Move it to
+You see new gem on `pkg/tepra-1.1.9.gem`.  Move it to
 `documentation/rubygems/gems/`, then make index.
 
     $ cd ~/devel-godigo/documentation/
