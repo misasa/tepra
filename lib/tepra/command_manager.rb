@@ -55,8 +55,7 @@ class Tepra::CommandManager
     	opts.define_head "Usage: tepra [option] [sub-command [sub-option]]"
 		opts.separator ""
 		opts.separator "Summary:"
-		opts.separator "    Print QR-code to King Jim's Tepra from command line or via REST
-    interface"
+		opts.separator "    Print QR-code to King Jim's Tepra via command line or REST interface"
 		opts.separator ""
 		opts.separator "Description:"
 		opts.separator "    This gem is not part of Medusa and supports Ruby for Windows only

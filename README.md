@@ -2,6 +2,11 @@
 
 Provide utilities for KING JIM's Tepra
 
+# Description.
+
+Provide utilities for KING JIM's Tepra.  Print QR-code to King Jim's
+Tepra via command line or REST interface.
+
 # Dependency
 
 ## [King Jim SPC](http://www.kingjim.co.jp/support/tepra/software "follow instruction")
@@ -74,5 +79,5 @@ You see new gem on `pkg/tepra-0.0.8.gem`.  Move it to
     $ cd ~/devel-godigo/documentation/
     $ gem generate_index -d rubygems -u
 
-Stage both `rubygems/gems/tepra-0.0.8.gem` and
-`quick/Marshal.4.8/tepra-0.0.8.gemspec.rz` and push modifications.
+Stage both `rubygems/gems/tepra-1.1.9.gem` and
+`quick/Marshal.4.8/tepra-1.1.9.gemspec.rz` and push modifications.
