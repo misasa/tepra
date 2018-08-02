@@ -2,7 +2,7 @@
 
 Provide utilities for KING JIM's Tepra
 
-# Description.
+# Description
 
 Provide utilities for KING JIM's Tepra.  Print QR-code to King Jim's
 Tepra via command line or REST interface.
