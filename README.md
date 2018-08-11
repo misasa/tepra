@@ -1,11 +1,12 @@
 # tepra
 
-Provide utilities for KING JIM's Tepra
+Print QR-code to King Jim's Tepra via command line or REST interface
 
 # Description
 
-Provide utilities for KING JIM's Tepra.  Print QR-code to King Jim's
-Tepra via command line or REST interface.
+Print QR-code to King Jim's Tepra via command line or REST interface.
+The program works as label-print server.  When the program is launched
+without argument, it runs as web server.
 
 # Dependency
 
