@@ -1,4 +1,4 @@
-# tepra
+# gem package -- tepra
 
 Print QR-code to King Jim's Tepra via command line or REST interface
 
