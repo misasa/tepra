@@ -8,6 +8,11 @@ Print QR-code to King Jim's Tepra via command line or REST interface.
 The program works as label-print server.  When the program is launched
 without argument, it runs as web server.
 
+See [gem package -- orochi-for-medusa](https://github.com/misasa/orochi-for-medusa) that refers to this package.
+See [gem package -- godigo](https://github.com/misasa/godigo) that refers to this package.
+See [gem package -- sisyphus-for-medusa](https://github.com/misasa/sisyphus-for-medusa) that refers to this package.
+
+
 # Dependency
 
 ## [King Jim SPC](http://www.kingjim.co.jp/support/tepra/software "follow instruction")
