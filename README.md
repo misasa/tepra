@@ -22,7 +22,7 @@ See [gem package -- sisyphus-for-medusa](https://github.com/misasa/sisyphus-for-
 
 Install the package by yourself as:
 
-    $ gem source -a http://dream.misasa.okayama-u.ac.jp/rubygems
+    $ gem source -a http://dream.misasa.okayama-u.ac.jp/rubygems/
     $ gem install tepra
 
 Have a configuration file `~/.teprarc`.  The simplest example is shown
