@@ -77,7 +77,7 @@ See also:
     http://dream.misasa.okayama-u.ac.jp
 
 Implementation:
-    Copyright (c) 2015 ISEI, Okayama University
+    Copyright (c) 2015-2019 IPM, Okayama University
     Licensed under the same terms as Ruby
 
 		EOF
