@@ -75,6 +75,7 @@ Example:
 See also:
     orochi-label
     http://dream.misasa.okayama-u.ac.jp
+    https://github.com/misasa/tepra/blob/master/lib/tepra/commands/print_command.rb
 
 Implementation:
     Copyright (c) 2015-2019 IPM, Okayama University
