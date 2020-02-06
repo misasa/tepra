@@ -135,6 +135,7 @@ class Tepra::CommandManager
 		opts.separator "    tepra-duplicate --help"
 		opts.separator "    orochi-label --help"
 		opts.separator "    http://dream.misasa.okayama-u.ac.jp"
+                opts.separator "    https://github.com/misasa/tepra/edit/master/lib/tepra/command_manager.rb"
 		opts.separator ""
 		opts.separator "Implementation:"
 		opts.separator "    Copyright (C) 2015-2020 Okayama University"
