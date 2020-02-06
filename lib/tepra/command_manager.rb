@@ -137,7 +137,7 @@ class Tepra::CommandManager
 		opts.separator "    http://dream.misasa.okayama-u.ac.jp"
 		opts.separator ""
 		opts.separator "Implementation:"
-		opts.separator "    Copyright (C) 2015-2018 Okayama University"
+		opts.separator "    Copyright (C) 2015-2020 Okayama University"
 		opts.separator "    License GPLv3+: GNU GPL version 3 or later"
     	opts.separator ""
         # opts.separator "  #{BUILTIN_COMMANDS.join(', ')}"

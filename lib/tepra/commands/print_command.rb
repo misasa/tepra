@@ -78,7 +78,7 @@ See also:
     https://github.com/misasa/tepra/blob/master/lib/tepra/commands/print_command.rb
 
 Implementation:
-    Copyright (c) 2015-2020 IPM, Okayama University
+    Copyright (c) 2015-2020 Okayama University
     Licensed under the same terms as Ruby
 
 		EOF
