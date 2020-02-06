@@ -79,7 +79,7 @@ See also:
 
 Implementation:
     Copyright (c) 2015-2020 Okayama University
-    Licensed under the same terms as Ruby
+    License GPLv3+: GNU GPL version 3 or later
 
 		EOF
 	end
