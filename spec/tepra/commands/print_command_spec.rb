@@ -4,6 +4,7 @@ module Tepra::Commands
 	describe PrintCommand do
 	  let(:cmd){ PrintCommand.new }
 	  before do
+		allow(Tepra).to receive(:find_spc_path).and_return(Pathname.new('/path/to/SPC9.exe'))
 		#allow(Tepra).to receive(:template_path).and_return('/path/to/template.spc')
 	  end
 
@@ -44,6 +45,7 @@ module Tepra::Commands
 				let(:printer){ 'Example Printer' }
 				before do
 				  Tepra.config = { printer: printer }
+				  p Tepra.find_spc_path
                   #p Tepra.config
 				end
 				it { expect(Tepra).to receive(:print).with(csvfile_path,{:printer_name => printer}).and_return('expect') }
