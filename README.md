@@ -12,6 +12,9 @@ See [gem package -- orochi-for-medusa](https://github.com/misasa/orochi-for-medu
 See [gem package -- godigo](https://github.com/misasa/godigo) that refers to this package.
 See [gem package -- sisyphus-for-medusa](https://github.com/misasa/sisyphus-for-medusa) that refers to this package.
 
+# Requrements
+
+Ruby 2.5, 2.6, or 2.7.
 
 # Dependency
 
