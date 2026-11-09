@@ -50,119 +50,79 @@ class Tepra::CommandManager
 
 	def opts
 		@opts ||= OptionParser.new do |opts|
-			#@options = {}
-    	opts.banner = "tepra: command-line utility for Tepra"
-    	opts.define_head "Usage: tepra [option] [sub-command [sub-option]]"
-		opts.separator ""
-		opts.separator "Summary:"
-		opts.separator "    Print QR-code to King Jim's Tepra via command line or REST interface."
-		opts.separator "    The program works as label-print server.  When the program is launched"
-		opts.separator "    without argument, it runs as web server."
-		opts.separator ""
-		opts.separator "Description:"
-		opts.separator "    This gem is not part of Medusa and supports Ruby for Windows only
-    (http://rubyinstaller.org/downloads/).  Install this gem and
-    update by following commands."
-		opts.separator ""
-		opts.separator "    CMD> gem source -a http://dream.misasa.okayama-u.ac.jp/rubygems/"
-		opts.separator "    CMD> gem install tepra"
-		opts.separator "    CMD> gem update tepra"
-		opts.separator ""
-		opts.separator "    Setup this computer and make sure you can print something from
-    `SPC 10'.  Identify name of the printer on `SPC 10' such as `KING
-    JIM SR5900P-NW'.  Technically the name is one listed on Windows'
-    Control Panel.  Put it to a configuration  file `~/.teprarc'.
-    A line should look like below."
-		opts.separator "    :printer: KING JIM SR5900P-NW"
-		opts.separator ""
-		opts.separator "    When you want to control several printers by one
-    host, list the printers to see a printer list in the
-    tepra server.  An element :name: corresponds to name that
-    is the listed on Windows' Control Panel.  An element :nickname:
-    is an alias that is shown on popup menu on tepra server.
-    An example of a configuration file `~/.teprarc' is shown below."
-		opts.separator "    :printer:"
-		opts.separator "      - :name: KING JIM SR3900P"
-		opts.separator "        :nickname: SR3900P@126"
-		opts.separator "        :template: 18x50"
-		opts.separator "      - :name: KING JIM SR5900P-A17F52 # 2016-09-01 (keep awake) on shelf"
-		opts.separator "        :nickname: SR5900P@126"
-		opts.separator "      - :name: KING JIM SR5900P-A1C8F9 # 2017-09-06 (keep awake) SIMS ims-5f"
-		opts.separator "        :nickname: SR5900P@125"
-		opts.separator "      - :name: KING JIM SR5900P-A1C8FA # 2017-09-06 (keep awake) SIMS ims-1270"
-		opts.separator "        :nickname: SR5900P@121"
-		opts.separator "      - :name: KING JIM WR1000"
-		opts.separator "        :nickname: WR1000@126"
-		opts.separator "        :template: 50x80"
-		opts.separator "      - :name: KING JIM SR5900P-A1C8F8 # 2017-09-06 (keep awake) with Surface-2016"
-		opts.separator "        :nickname: SR5900P@127"
-		opts.separator "      - :name: KING JIM SR5900P-A123E5 # 2015-09-01 (auto power off) on TK's office"
-		opts.separator "        :nickname: SR5900P@201"
-		opts.separator "      - :name: KING JIM SR5900P-A0EA7E # 2015-09-01 (auto power off) on Tsutom's office"
-		opts.separator "        :nickname: SR5900P@212"
-		opts.separator "      # - :name: KING JIM SR5900P-A0EA7A # 2015-09-01 (auto power off)"
-		opts.separator "    :template: 18x18"
-		opts.separator ""
-        opts.separator "    If you see timeout error, set `timeout' line on
-    configuration file `~/.teprarc' as below and raise the value.
-    Default setting is 5 seconds."
-  		opts.separator "    :timeout: 10"
-		opts.separator ""
-		opts.separator "    Issue following to have a test label."
-		opts.separator "    CMD> tepra print ''20110119154409-142-363,Heaven''"
-        opts.separator ""
-		opts.separator "    To print label from web browser, launch this command as server."
-		opts.separator "    Without sub-command, this will startup as server mode.  Then access to"
-		opts.separator "    the server with typical URL `http://localhost:8889/'."
-        opts.separator ""
-		opts.separator "Sub-command:"
-        opts.separator "    unspecified :  `server' is set"
-		opts.separator "    server      :  launch server to accept queue via REST interface as such below"
-		opts.separator "                :  http://localhost:8889/Format/Print?UID=12345678&NAME=MyGreatStone"
-		opts.separator "                :  http://localhost:8889/Format/Print?UID=12345678&NAME=MyGreatStone&printer=KING%20JIM%20WR1000%template=18x18"
-		opts.separator "    print       :  print QR-code with number and name"
-		opts.separator ""
-    	opts.separator "Examples:"
-		opts.separator "    CMD> tepra print ''20110119154409-142-363,Heaven''"
-		opts.separator ""
-		opts.separator "    CMD> tepra"
-		opts.separator "    CMD> tepra server"
-		opts.separator "    darwin$ open http://localhost:8889/"
-		opts.separator "    darwin$ curl http://localhost:8889/Format/Print?UID=12345678&NAME=MyGreatStone"
-		opts.separator "    darwin$ curl http://localhost:8889/Format/Print?UID=12345678&NAME=MyGreatStone&printer=KING%20JIM%20WR1000%template=18x18"
-		opts.separator ""
-		opts.separator "See Also"
-		opts.separator "    tepra-duplicate --help"
-		opts.separator "    orochi-label --help"
-		opts.separator "    http://dream.misasa.okayama-u.ac.jp"
-                opts.separator "    https://github.com/misasa/tepra/edit/master/lib/tepra/command_manager.rb"
-		opts.separator ""
-		opts.separator "Implementation:"
-		opts.separator "    Copyright (C) 2015-2020 Okayama University"
-		opts.separator "    License GPLv3+: GNU GPL version 3 or later"
-    	opts.separator ""
-        # opts.separator "  #{BUILTIN_COMMANDS.join(', ')}"
-        # opts.separator "Commands:"
-        # opts.separator ""
-        # opts.separator "  tepra"
-    	# opts.separator "  tepra print csvfile"
-        # opts.separator "  tepra server"
-		# opts.separator "  tepra [command] --help"
-    	opts.separator "option:"
+			opts.banner = "tepra: command-line utility for King Jim TEPRA printers"
+			opts.define_head "Usage: tepra [options] [command [command options]]"
+			opts.separator ""
+			opts.separator <<~HELP
+			  Print QR code labels from the command line or through the REST API.
+			  Running tepra without a subcommand starts the web server.
 
+			  Setup:
+			      Printing requires Windows and King Jim's SPC software.
+			      Install or update the gem with these commands:
 
-    	opts.on_tail("-?", "--help", "Show this message") do |v|
-    		@options[:help] = v
-    	end
+			      CMD> gem source -a http://dream.misasa.okayama-u.ac.jp/rubygems/
+			      CMD> gem install tepra
+			      CMD> gem update tepra
 
-    	opts.on_tail("-v", "--[no-]verbose", "Run verbosely") do |v|
-    		@options[:verbose] = v
-    	end
+			      Print a test label from SPC first. In ~/.teprarc, use the exact printer
+			      name shown in Windows under Control Panel > Devices and Printers:
 
-    	opts.on_tail("-V", "--version", "Show version") do |v|
-    		@options[:version] = v
-    	end
-  	end
+			      :printer: KING JIM SR5900P-NW
+
+			      To configure multiple printers, list them under :printer. Use :nickname
+			      for the name shown in the web interface and :template for the printer's
+			      default template. For example:
+
+			      :printer:
+			        - :name: KING JIM SR3900P
+			          :nickname: Lab printer
+			          :template: 18x50
+			        - :name: KING JIM WR1000
+			          :nickname: Office printer
+			          :template: 50x80
+			      :template: 18x18
+
+			      If print jobs time out, increase :timeout in ~/.teprarc.
+			      The default timeout is 5 seconds.
+
+			      :timeout: 10
+
+			  Subcommands:
+			      print    Print a label from an ID and name or a CSV file.
+			      server   Start the web server for browser and REST API printing.
+			               The default address is http://localhost:8889/.
+
+			  Examples:
+			      CMD> tepra print "20110119154409-142-363,Heaven"
+			      CMD> tepra server
+			      curl 'http://localhost:8889/Format/Print?UID=12345678&NAME=MyGreatStone'
+			      curl 'http://localhost:8889/Format/Print?UID=12345678&NAME=MyGreatStone&printer=KING%20JIM%20WR1000&template=18x18'
+
+			  See also:
+			      tepra print --help
+			      tepra server --help
+			      tepra-duplicate --help
+			      orochi-label --help
+
+			  Copyright (c) 2015-2020 Okayama University
+			  Licensed under the GNU General Public License, version 3 or later.
+
+			  Options:
+			HELP
+
+			opts.on_tail("-?", "--help", "Show help") do |v|
+				@options[:help] = v
+			end
+
+			opts.on_tail("-v", "--[no-]verbose", "Enable verbose output") do |v|
+				@options[:verbose] = v
+			end
+
+			opts.on_tail("-V", "--version", "Show the version number") do |v|
+				@options[:version] = v
+			end
+		end
 	end
 
 	def usage

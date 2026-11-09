@@ -2,28 +2,30 @@ require 'tepra/command'
 
 class Tepra::Commands::PrintCommand < Tepra::Command
 	def initialize
-		super 'print', 'Print label with QR-code', :set => 1, :skip_header => true, :printer => Tepra.default_printer
+		super 'print', 'Print QR code labels', :set => 1, :skip_header => true, :printer => Tepra.default_printer
 
 		add_option('-s', '--set NUMBER',
-						'Specify number of labels') do |set, options|
+						'Set the number of copies') do |set, options|
 			options[:set] = set
 		end
 
 		add_option('-t', '--template TEMPLATEFILE',
-						"Specify template path. Available templates are #{Tepra.template_dir}/{#{Tepra.templates.join(",")}}.tpe." ) do |template_path, options|
+						"Set the template file path. Bundled templates in #{Tepra.template_dir}: #{Tepra.templates.join(", ")}." ) do |template_path, options|
 			options[:template_path] = template_path
 		end
 
-		add_option('-p', '--printer PRINTER',
-						"Specify printer name. Available printers are {#{Tepra.printers.join(",")}}.") do |printer_name, options|
+		printer_names = Tepra.printers.join(", ")
+		printer_description = "Select a printer by name."
+		printer_description += " Configured printers: #{printer_names}." unless printer_names.empty?
+		add_option('-p', '--printer PRINTER', printer_description) do |printer_name, options|
 			options[:printer_name] = printer_name
 		end
 
-		add_option('-n', '--dry-run','Perform a trial run witn no changes mode') do |v|
+		add_option('-n', '--dry-run','Show the SPC command without printing') do |v|
 			options[:dry_run] = v
 		end
 
-		add_option('-s', '--[no-]skip-header', 'Skip first line of DATA') do |v|
+		add_option('-s', '--[no-]skip-header', 'Skip the header row in multi-row input') do |v|
 			options[:skip_header] = v
 		end
 	end
@@ -33,7 +35,7 @@ class Tepra::Commands::PrintCommand < Tepra::Command
 	end
 
 	def arguments
-		"datastring/csvfile"
+		"A CSV string or a path to a CSV file"
 	end
 
 	def defaults_str
@@ -41,47 +43,25 @@ class Tepra::Commands::PrintCommand < Tepra::Command
 	end
 
 	def description
-	<<-EOF
-    Print label with QR-code.  If you see timeout error, set `timeout'
-    line on configration file `~/.teprarc' as below and raise the
-    value.  Default setting is 5 seconds.
+		<<~'HELP'
+		  Print QR code labels from a CSV string or a CSV file. Each row supplies
+		  the data for a label. The first row is skipped by default when the input
+		  has multiple rows. Use --no-skip-header if the first row contains label
+		  data.
 
-    :timeout: 10
+		  Printing requires King Jim's SPC software. If a print job times out,
+		  increase :timeout in ~/.teprarc. The default is 5 seconds.
 
-    When you feed multiple entries delimited by CR either by
-    datastring or datacsvfile, it prints multiple labels.  Note that
-    by default it skips the first line.
+		      :timeout: 10
 
-    This program tries to look for "SPC" on C drive.  If you install
-    "SPC" to D drive or else, configure %PATH% carefully.
+		  Examples:
+		      tepra print "0000-01,test-1"
+		      tepra print labels.csv
+		      tepra print --no-skip-header labels-without-header.csv
 
-Synopsis:
-    tepra print "ID,name"
-    tepra print csvfile
-
-Options:
-    --no-skip-header:  Print first line
-
-Example:
-	CMD> tepra print "0000-01,test-1"
-
-	cygwin$ echo -e 'ID,Name\\n0000-01,KLB1' > my-great-list.csv
-	cygwin$ tepra print my-great-list.csv
-
-	cygwin$ tepra print "ID,Name\\n0000-01,test"
-	cygwin$ tepra print "0000-01,test-1\\n0000-02,test-2" --no-skip-header
-	cygwin$ tepra print "0000-01,test-1"
-
-See also:
-    orochi-label
-    http://dream.misasa.okayama-u.ac.jp
-    https://github.com/misasa/tepra/blob/master/lib/tepra/commands/print_command.rb
-
-Implementation:
-    Copyright (c) 2015-2020 Okayama University
-    License GPLv3+: GNU GPL version 3 or later
-
-		EOF
+		  Copyright (c) 2015-2020 Okayama University
+		  Licensed under the GNU General Public License, version 3 or later.
+		HELP
 	end
 
 	def execute

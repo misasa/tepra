@@ -1,64 +1,46 @@
-# gem package -- tepra
+# tepra
 
-Print QR-code to King Jim's Tepra via command line or REST interface
+Print QR code labels on King Jim TEPRA printers from the command line or through
+the REST API. Running `tepra` without a subcommand starts the web server.
 
-# Description
+Related projects include [orochi-for-medusa](https://github.com/misasa/orochi-for-medusa),
+[godigo](https://github.com/misasa/godigo), and
+[sisyphus-for-medusa](https://github.com/misasa/sisyphus-for-medusa).
 
-Print QR-code to King Jim's Tepra via command line or REST interface.
-The program works as label-print server.  When the program is launched
-without argument, it runs as web server.
+## Requirements
 
-See [gem package -- orochi-for-medusa](https://github.com/misasa/orochi-for-medusa) that refers to this package.
-See [gem package -- godigo](https://github.com/misasa/godigo) that refers to this package.
-See [gem package -- sisyphus-for-medusa](https://github.com/misasa/sisyphus-for-medusa) that refers to this package.
+- Ruby 2.5, 2.6, or 2.7
+- Windows and [King Jim SPC software](http://www.kingjim.co.jp/support/tepra/software) for printing
 
-# Requrements
+## Install and configure
 
-Ruby 2.5, 2.6, or 2.7.
+```sh
+gem source -a http://dream.misasa.okayama-u.ac.jp/rubygems/
+gem install tepra
+```
 
-# Dependency
+Create `~/.teprarc`. Use the exact printer name shown in Windows under
+**Control Panel > Devices and Printers**.
 
-## [King Jim SPC](http://www.kingjim.co.jp/support/tepra/software "follow instruction")
+```yaml
+:printer: KING JIM SR3900P
+:timeout: 30
+:template: 18x18
+```
 
+To print a label, pass the ID and name as a comma-separated pair.
 
-# Installation
+```sh
+tepra print "20171117134145-914053,TS-SJ-54"
+```
 
-Install the package by yourself as:
+Run `tepra --help`, `tepra print --help`, or `tepra server --help` for details.
 
-    $ gem source -a http://dream.misasa.okayama-u.ac.jp/rubygems/
-    $ gem install tepra
+## Contributing
 
-Have a configuration file `~/.teprarc`.  The simplest example is shown
-below.  Note that name of label printer should be identical to those
-listed in `Control Panel / Devices and Printers`.
-
-    :printer: KING JIM SR3900P
-    :timeout: 30
-    :template: 18x18
-
-To print a label with barcode, issue following command.
-
-    tepra print "20171117134145-914053,TS-SJ-54"
-
-# Commands
-
-Commands are summarized as:
-
-| command          | description                                                               | note                       |
-|------------------|---------------------------------------------------------------------------|----------------------------|
-| tepra            | Print QR-code to King Jim's Tepra from command line or via REST interface |                            |
-
-# Usage
-
-See online document with option `--help`.
-
-# Contributing
-
-1. Fork it ( https://github.com/[my-github-username]/tepra/fork )
-2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Add some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create new Pull Request
+1. Fork the repository and create a feature branch.
+2. Run the tests and commit your changes.
+3. Push your branch and open a pull request.
 
 ## Build and verify the gem
 

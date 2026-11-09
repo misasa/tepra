@@ -3,7 +3,7 @@ require 'tepra/server'
 
 class Tepra::Commands::ServerCommand < Tepra::Command
 	def initialize
-		super 'server', 'Tepra HTTP server', :bind => '0.0.0.0', :port => Tepra.default_port
+		super 'server', 'Run the TEPRA HTTP server', :bind => '0.0.0.0', :port => Tepra.default_port
 
 		OptionParser.accept :Port do |port|
 			if port =~ /\A\d+\z/ then
@@ -20,15 +20,15 @@ class Tepra::Commands::ServerCommand < Tepra::Command
 			end
 		end
 
-		add_option '-p', '--port=PORT', :Port, 'port to listen on' do |port, options|
+		add_option '-p', '--port=PORT', :Port, 'Set the listening port' do |port, options|
 			options[:port] = port
 		end
 
-		add_option('-q', '--quit','Stop the self-hosted server if running') do |v|
+		add_option('-q', '--quit','Stop the server if it is running') do |v|
 			options[:quit] = v
 		end
 
-		add_option '-b', '--bind=HOST,HOST','addresses to bind', Array do |address, options|
+		add_option '-b', '--bind=HOST,HOST','Set the addresses to listen on', Array do |address, options|
 			options[:bind] ||= []
 			options[:bind].push(*address)
 		end

@@ -16,7 +16,8 @@ RSpec.describe 'tepra executable' do
     stdout, stderr, status = run_cli('--help')
 
     expect(status.exitstatus).to eq(0)
-    expect(stdout).to include('Usage: tepra', 'Sub-command:', '--version')
+    expect(stdout).to include('Usage: tepra', 'Subcommands:', '--version')
+    expect(stdout).to include('&printer=KING%20JIM%20WR1000&template=18x18')
     expect(stderr).to be_empty
   end
 
