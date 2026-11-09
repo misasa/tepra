@@ -72,15 +72,28 @@ class Tepra::CommandManager
 
 			      To configure multiple printers, list them under :printer. Use :nickname
 			      for the name shown in the web interface and :template for the printer's
-			      default template. For example:
+			      default template. The example below uses the lab's printer settings.
 
 			      :printer:
 			        - :name: KING JIM SR3900P
-			          :nickname: Lab printer
+			          :nickname: SR3900P@126
 			          :template: 18x50
+			        - :name: KING JIM SR5900P-A17F52 # 2016-09-01 (keep awake) on shelf
+			          :nickname: SR5900P@126
+			        - :name: KING JIM SR5900P-A1C8F9 # 2017-09-06 (keep awake) SIMS ims-5f
+			          :nickname: SR5900P@125
+			        - :name: KING JIM SR5900P-A1C8FA # 2017-09-06 (keep awake) SIMS ims-1270
+			          :nickname: SR5900P@121
 			        - :name: KING JIM WR1000
-			          :nickname: Office printer
+			          :nickname: WR1000@126
 			          :template: 50x80
+			        - :name: KING JIM SR5900P-A1C8F8 # 2017-09-06 (keep awake) with Surface-2016
+			          :nickname: SR5900P@127
+			        - :name: KING JIM SR5900P-A123E5 # 2015-09-01 (auto power off) on TK's office
+			          :nickname: SR5900P@201
+			        - :name: KING JIM SR5900P-A0EA7E # 2015-09-01 (auto power off) on Tsutom's office
+			          :nickname: SR5900P@212
+			        # - :name: KING JIM SR5900P-A0EA7A # 2015-09-01 (auto power off)
 			      :template: 18x18
 
 			      If print jobs time out, increase :timeout in ~/.teprarc.
