@@ -60,23 +60,45 @@ See online document with option `--help`.
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create new Pull Request
 
-## Revise the documentation and reflect to rubygem
+## Build and verify the gem
 
-Issue following to test your revision.
+With Ruby 2.6.10 and Bundler 2.4.22 installed, run the specs, build the gem and
+check its installed CLI.
 
-    $ cd ~/devel-godigo/tepra/
-    $ bundle exec rspec
+```sh
+bundle install
+bundle exec rspec
+bundle exec rake build
+bundle exec ruby script/verify_package.rb pkg/tepra-1.2.1.gem
+```
 
-After revision, issue following.
+GitHub Actions builds and checks the gem after all Ruby test jobs pass. The
+`tepra-gem` artifact is available in the workflow run. A stable `vVERSION`
+tag on a tested `master` commit also publishes the verified gem and its
+SHA-256 manifest to [GitHub Releases](https://github.com/misasa/tepra/releases).
+The tag must match the version in `lib/tepra/version.rb`.
 
-    $ cd ~/devel-godigo/tepra/
-    $ rake build
+## Download and transfer from Jenkins
 
-You see new gem on `pkg/tepra-1.1.9.gem`.  Move it to
-`documentation/rubygems/gems/`, then make index.
+Use Bash, curl, `shasum` and `link` to fetch a public Release. The default
+selects the latest stable Release. Use `--version` to pin the build to deploy.
 
-    $ cd ~/devel-godigo/documentation/
-    $ gem generate_index -d rubygems -u
+```sh
+bash script/download_release.sh --output-dir ./downloads
+bash script/download_release.sh --version 1.2.1 --output-dir ./downloads-1.2.1
+```
 
-Stage both `rubygems/gems/tepra-1.1.9.gem` and
-`quick/Marshal.4.8/tepra-1.1.9.gemspec.rz` and push modifications.
+The helper verifies the SHA-256 manifest before saving the files. For the
+Jenkins transfer step, set `TEPRA_DEPLOY_DEST` to the server and directory
+configured for the job, then run the helper with `--deploy`.
+
+```sh
+export TEPRA_DEPLOY_DEST='user@server.example.edu:/absolute/web/path'
+bash script/download_release.sh --version 1.2.1 --output-dir ./transfer-1.2.1 --deploy
+```
+
+The remote parent directory must already exist. Jenkins uses its existing
+noninteractive SSH credentials and known host. The helper copies both assets
+to a new `vVERSION` subdirectory and refuses existing local files or a remote
+version directory. Use a fresh local output directory for each transfer.
+After the transfer, update the gem index through the existing server-side process.

@@ -1,3 +1,4 @@
+require 'stringio'
 require 'spec_helper'
 
 module Tepra
@@ -17,9 +18,9 @@ module Tepra
 	describe ".spc_path" do
 		before do
 			Tepra.spc_path = nil
-			Tepra.stub(:find_spc_path).and_return(nil)
+			allow(Tepra).to receive(:find_spc_path).and_return(nil)
 		end
-		it { expect{Tepra.spc_path.to_s}.to raise_error }
+		it { expect { Tepra.spc_path }.to raise_error(RuntimeError, "could not find SPC*.exe") }
 	end
 
 	describe ".spc_version" do
@@ -100,20 +101,27 @@ module Tepra
 	end
 
 	describe ".ip_address" do
-		subject {Tepra.ip_address }
-		before do
-			puts subject
+		it "extracts IPv4 addresses and ignores IPv6 and gateway entries" do
+			output = StringIO.new(<<~IPCONFIG)
+			   IPv6 Address. . . . . . . . . . . : fe80::1
+			   IPv4 Address. . . . . . . . . . . : 192.0.2.10(Preferred)
+			   Default Gateway . . . . . . . . . : 192.0.2.1
+			   IPv4 Address. . . . . . . . . . . : 198.51.100.20
+			IPCONFIG
+			expect(IO).to receive(:popen).with('cmd /c "chcp 437 & ipconfig/all"').and_yield(output)
+
+			expect(Tepra.ip_address).to eq(%w[192.0.2.10 198.51.100.20])
 		end
-		it { expect{ Tepra.ip_address }.not_to raise_error }
 	end
 
 	describe ".create_data_file" do
-		subject { Tepra.create_data_file(data, opts) }
+		subject { @csv_file = Tepra.create_data_file(data, opts) }
+		after { @csv_file.unlink if @csv_file }
 
 		context "with nil data" do
 			let(:data) { nil}
 			let(:opts) { {} }
-			it { expect{subject}.to raise_error }
+			it { expect { subject }.to raise_error(RuntimeError, "Invalid DATA_or_DATAFILE") }
 		end
 
 		context "with 1 column data without header" do
@@ -127,7 +135,7 @@ module Tepra
 		context "with empty data" do
 			let(:data) { ""}
 			let(:opts) { {} }
-			it { expect{subject}.to raise_error }
+			it { expect { subject }.to raise_error(RuntimeError, "Invalid DATA_or_DATAFILE") }
 		end
 
 		context "with 0 column data" do
@@ -180,9 +188,6 @@ module Tepra
 			it { expect(subject).to include(File.expand_path(csvfile_path,'.', :output_type => :mixed)) }
 		end
 
-		after do
-		  puts subject
-		end
 	end
 
 #	describe ".print_csvfile" do
@@ -375,7 +380,23 @@ module Tepra
     end
 
 	describe ".config" do
-		it { expect(Tepra.config).to be_an_instance_of(Hash) }
+		it "loads printer settings from the selected preference file" do
+			preferences = <<~YAML
+			  :printer:
+			    - :name: KING JIM WR1000
+			      :nickname: Lab printer
+			      :template: 50x80
+			  :port: 9123
+			  :timeout: 20
+			YAML
+			File.write(Tepra.pref_path, preferences)
+
+			expect(Tepra.default_printer).to eq('KING JIM WR1000')
+			expect(Tepra.default_template(Tepra.default_printer)).to eq('50x80')
+			expect(Tepra.default_port).to eq(9123)
+			expect(Tepra.default_timeout).to eq(20)
+			expect(File.read(Tepra.pref_path)).to eq(preferences)
+		end
 	end
 
 	describe ".default_printer with config" do
