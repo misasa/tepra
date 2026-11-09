@@ -27,6 +27,10 @@ jobs:
           - ruby: '2.7.8'
             bundler: '2.4.22'
             rubygems: '3.4.22'
+          - ruby: '3.2'
+          - ruby: '3.3'
+          - ruby: '3.4'
+          - ruby: '4.0'
     steps:
       - uses: actions/checkout@v6
         with:
@@ -128,7 +132,7 @@ jobs:
           gh release create "$RELEASE_TAG" \
             "pkg/$GEM_FILENAME" "pkg/$GEM_FILENAME.sha256" \
             --verify-tag --draft --title "$RELEASE_TAG" \
-            --notes "Verified on Ruby 2.5.9, 2.6.10 and 2.7.8. Download the gem and SHA-256 manifest below."
+            --notes "Tested on Ruby 2.5.9, 2.6.10, 2.7.8, 3.2, 3.3, 3.4 and 4.0. Download the gem and SHA-256 manifest below."
           uploaded="$(mktemp -d)"
           gh release download "$RELEASE_TAG" --dir "$uploaded" \
             --pattern "$GEM_FILENAME" --pattern "$GEM_FILENAME.sha256"

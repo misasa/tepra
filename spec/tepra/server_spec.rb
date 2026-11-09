@@ -55,7 +55,7 @@ RSpec.describe Tepra::Server do
 
   describe 'POST /print' do
     it 'passes form input and print options through and redirects to the form' do
-      expect(Tepra).to receive(:print).with('id,name', printer_name: printer, template: template)
+      expect(Tepra).to receive(:print).with('id,name', { printer_name: printer, template: template })
 
       post '/print', data: 'id,name', printer: printer, template: template
 
@@ -90,7 +90,7 @@ RSpec.describe Tepra::Server do
 
   describe 'GET /Format/Print' do
     it 'combines UID and NAME and forwards printer and template selections' do
-      expect(Tepra).to receive(:print).with('12345,試料', printer_name: printer, template: template)
+      expect(Tepra).to receive(:print).with('12345,試料', { printer_name: printer, template: template })
 
       get '/Format/Print', UID: '12345', NAME: '試料', printer: printer, template: template
 
@@ -106,7 +106,7 @@ RSpec.describe Tepra::Server do
     end
 
     it 'forwards the printer when the template selection is blank' do
-      expect(Tepra).to receive(:print).with('12345,sample', printer_name: printer)
+      expect(Tepra).to receive(:print).with('12345,sample', { printer_name: printer })
 
       get '/Format/Print', UID: '12345', NAME: 'sample', printer: printer, template: ''
 
