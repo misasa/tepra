@@ -1,149 +1,126 @@
 require 'spec_helper'
 require 'tepra/server'
 require 'rack/test'
+require 'json'
 
-module Tepra
-	describe Server do
-		include Rack::Test::Methods
+RSpec.describe Tepra::Server do
+  include Rack::Test::Methods
 
-		def app
-			Tepra::Server
-		end
+  let(:printer) { 'KING JIM WR1000' }
+  let(:template) { '50x80' }
 
-		describe "get '/info'" do
-			it {
-				get '/info'
-				expect(last_response).to be_ok
-			}
-		end
+  def app
+    Tepra::Server
+  end
 
-        describe "get '/printers.json'" do
-          it {
-          	get '/printers.json'
-          	expect(last_response).to be_ok
-          }          
-#          after do
-#          	puts last_response.body
-#          end
-        end
+  before do
+    Tepra.config = { printer: [{ name: printer, nickname: 'Lab printer', template: template }] }
+  end
 
-        describe "get '/templates.json'", :current => true do
-          it {
-          	get '/templates.json'
-          	expect(last_response).to be_ok
-          }
-          after do
-          	puts last_response.body
-          end
-        end
+  it 'renders the print form with configured printers and available templates' do
+    get '/', data: 'hello,world'
 
-		describe "get '/'" do
-			before do
-				Tepra.config = { printer: [{name: "KING JIM SR5900P", nickname: "SR5900P@121"}, {name:"KING JIM WR1000"}] }
-				get '/', params
-			end
+    expect(last_response).to be_ok
+    expect(last_response.body).to include('/print', 'Lab printer', printer, template)
+  end
 
-			context "without params" do
-				let(:params){ {} }
-				it { 
-					expect(last_response).to be_ok
-				}
+  it 'shows the detected IPv4 address with the request port' do
+    allow(Tepra).to receive(:ip_address).and_return(['192.0.2.10'])
 
-			end
+    get 'http://example.org:9999/info'
 
-			context "with params" do
-				let(:params){ {:data => 'hello,world'} }
-				it { expect(last_response).to be_ok }
-			end
-		end
+    expect(last_response).to be_ok
+    expect(last_response.body).to include('192.0.2.10:9999')
+  end
 
+  it 'returns printer names, nicknames, and templates as JSON' do
+    get '/printers.json'
 
-		describe "get '/Format/Print'" do
-			context "without params" do
-				let(:params){ {} }
-				before do
-					get '/Format/Print', params
-				end	
-				it { expect(last_response).to be_ok }
-			end
-			context "with params" do
-				let(:params){ {:UID => "12345", :NAME => "test-sample"} }
-				it { 
-					expect(Tepra).to receive(:print).with("12345,test-sample",{}).and_return('expect')
-					get '/Format/Print', params
-				}
-			end
+    expect(last_response).to be_ok
+    expect(last_response.content_type).to include('application/json')
+    expect(JSON.parse(last_response.body)).to eq([
+      { 'name' => printer, 'nickname' => 'Lab printer', 'template' => template }
+    ])
+  end
 
-			context "with params printer and template" do
-				let(:params){ {:UID => "12345", :NAME => "test-sample", :printer => printer, :template => template} }
-				let(:printer){ "KING JIM WR1000" }
-				let(:template){ "50x50" }
-				it { 
-					expect(Tepra).to receive(:print).with("12345,test-sample",{:printer_name => printer, :template => template}).and_return('expect')
-					get '/Format/Print', params
-				}
-			end
+  it 'lists selectable templates as JSON and omits the default template' do
+    get '/templates.json'
 
-			context "with params printer and without template" do
-				let(:params){ {:UID => "12345", :NAME => "test-sample", :printer => printer} }
-				let(:printer){ "KING JIM WR1000" }
-				it { 
-					expect(Tepra).to receive(:print).with("12345,test-sample",{:printer_name => printer}).and_return('expect')
-					get '/Format/Print', params
-				}
-			end
+    expect(last_response).to be_ok
+    expect(last_response.content_type).to include('application/json')
+    expect(JSON.parse(last_response.body)).to match_array(
+      %w[18x18 18x50 18x290 24x50 36x50 50x50 50x80 100x100].map { |name| { 'name' => name } }
+    )
+  end
 
+  describe 'POST /print' do
+    it 'passes form input and print options through and redirects to the form' do
+      expect(Tepra).to receive(:print).with('id,name', { printer_name: printer, template: template })
 
-			context "with params printer and empty template" do
-				let(:params){ {:UID => "12345", :NAME => "test-sample", :printer => printer, :template => ""} }
-				let(:printer){ "KING JIM WR1000" }
-				it { 
-					expect(Tepra).to receive(:print).with("12345,test-sample",{:printer_name => printer}).and_return('expect')
-					get '/Format/Print', params
-				}
-			end
+      post '/print', data: 'id,name', printer: printer, template: template
 
-		end
+      expect(last_response.status).to eq(302)
+      expect(URI.parse(last_response['Location']).path).to eq('/')
+    end
 
-		describe "post '/print'" do
-			# before do
-			# 	get '/print', params
-			# end
+    it 'omits blank selections so the printer and template defaults apply' do
+      expect(Tepra).to receive(:print).with('id,name', {})
 
-			context "without params" do
-				let(:params){ {} }
-				before do
-					post '/print', params
-				end
-				it { 
-					expect(last_response).to be_redirect
-				}
-			end
+      post '/print', data: 'id,name', printer: '', template: ''
 
-			context "with params" do
-				let(:params){ {:data => 'hello,world'} }
-				before do
-					allow(Tepra).to receive(:print)
-					post '/print', params
-				end
+      expect(last_response).to be_redirect
+    end
 
-				it { expect(last_response).to be_redirect }
-			end
+    it 'redirects without printing when data is missing' do
+      expect(Tepra).not_to receive(:print)
 
+      post '/print', printer: printer
 
-			context "with params" do
-				let(:params){ {:data => "hello,world"} }
-				before do
-					#allow(Tepra).to receive(:print).and_return('mock')
-					#get '/print', params
-				end
-				it { 
-					expect(Tepra).to receive(:print).with("hello,world",{}).and_return('expect')
-					post '/print', params
-				}
-				#it { expect(last_response).to be_ok }
-			end
-		end
+      expect(last_response).to be_redirect
+    end
 
-	end
+    it 'still redirects when the print job times out' do
+      expect(Tepra).to receive(:print).with('id,name', {}).and_raise(Tepra::TimeoutError.new('timed out'))
+
+      post '/print', data: 'id,name'
+
+      expect(last_response.status).to eq(302)
+    end
+  end
+
+  describe 'GET /Format/Print' do
+    it 'combines UID and NAME and forwards printer and template selections' do
+      expect(Tepra).to receive(:print).with('12345,試料', { printer_name: printer, template: template })
+
+      get '/Format/Print', UID: '12345', NAME: '試料', printer: printer, template: template
+
+      expect(last_response).to be_ok
+    end
+
+    it 'uses defaults when selections are absent' do
+      expect(Tepra).to receive(:print).with('12345,sample', {})
+
+      get '/Format/Print', UID: '12345', NAME: 'sample'
+
+      expect(last_response).to be_ok
+    end
+
+    it 'forwards the printer when the template selection is blank' do
+      expect(Tepra).to receive(:print).with('12345,sample', { printer_name: printer })
+
+      get '/Format/Print', UID: '12345', NAME: 'sample', printer: printer, template: ''
+
+      expect(last_response).to be_ok
+    end
+
+    [{ UID: '12345' }, { NAME: 'sample' }, {}].each do |params|
+      it "returns OK without printing when required fields are missing from #{params.inspect}" do
+        expect(Tepra).not_to receive(:print)
+
+        get '/Format/Print', params
+
+        expect(last_response).to be_ok
+      end
+    end
+  end
 end

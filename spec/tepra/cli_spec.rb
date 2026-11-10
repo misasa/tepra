@@ -1,0 +1,32 @@
+require 'spec_helper'
+require 'open3'
+require 'rbconfig'
+
+RSpec.describe 'tepra executable' do
+  def run_cli(*arguments)
+    root = File.expand_path('../..', __dir__)
+    Open3.capture3(
+      { 'HOME' => @work_dir, 'USERPROFILE' => @work_dir },
+      RbConfig.ruby, '-I', File.join(root, 'lib'), File.join(root, 'bin', 'tepra'),
+      *arguments, chdir: @work_dir
+    )
+  end
+
+  it 'prints top-level help and exits successfully' do
+    stdout, stderr, status = run_cli('--help')
+
+    expect(status.exitstatus).to eq(0)
+    expect(stdout).to include('Usage: tepra', 'Subcommands:', '--version')
+    expect(stdout).to include('- :name: KING JIM SR5900P-A17F52', ':nickname: SR5900P@126')
+    expect(stdout).to include('&printer=KING%20JIM%20WR1000&template=18x18')
+    expect(stderr).to be_empty
+  end
+
+  it 'prints the library version and exits successfully' do
+    stdout, stderr, status = run_cli('--version')
+
+    expect(status.exitstatus).to eq(0)
+    expect(stdout).to eq("#{Tepra::VERSION}\n")
+    expect(stderr).to be_empty
+  end
+end

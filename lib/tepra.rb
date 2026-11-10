@@ -282,7 +282,7 @@ module Tepra
 		raise RuntimeError.new("Invalid DATA_or_DATAFILE") if data_or_path.empty?
 		#headers = opts[:skip_header]
 
-		if File.exists?(data_or_path)		
+		if File.exist?(data_or_path)
 			data = File.read(data_or_path)
 		else
 			data = data_or_path

@@ -1,82 +1,86 @@
-# gem package -- tepra
+# tepra
 
-Print QR-code to King Jim's Tepra via command line or REST interface
+Print QR code labels on King Jim TEPRA printers from the command line or through
+the REST API. Running `tepra` without a subcommand starts the web server.
 
-# Description
+Related projects include [orochi-for-medusa](https://github.com/misasa/orochi-for-medusa),
+[godigo](https://github.com/misasa/godigo), and
+[sisyphus-for-medusa](https://github.com/misasa/sisyphus-for-medusa).
 
-Print QR-code to King Jim's Tepra via command line or REST interface.
-The program works as label-print server.  When the program is launched
-without argument, it runs as web server.
+## Requirements
 
-See [gem package -- orochi-for-medusa](https://github.com/misasa/orochi-for-medusa) that refers to this package.
-See [gem package -- godigo](https://github.com/misasa/godigo) that refers to this package.
-See [gem package -- sisyphus-for-medusa](https://github.com/misasa/sisyphus-for-medusa) that refers to this package.
+- Ruby 2.5, 2.6, or 2.7
+- Windows and [King Jim SPC software](http://www.kingjim.co.jp/support/tepra/software) for printing
 
-# Requrements
+## Install and configure
 
-Ruby 2.5, 2.6, or 2.7.
+```sh
+gem source -a http://dream.misasa.okayama-u.ac.jp/rubygems/
+gem install tepra
+```
 
-# Dependency
+Create `~/.teprarc`. Use the exact printer name shown in Windows under
+**Control Panel > Devices and Printers**.
 
-## [King Jim SPC](http://www.kingjim.co.jp/support/tepra/software "follow instruction")
+```yaml
+:printer: KING JIM SR3900P
+:timeout: 30
+:template: 18x18
+```
 
+To print a label, pass the ID and name as a comma-separated pair.
 
-# Installation
+```sh
+tepra print "20171117134145-914053,TS-SJ-54"
+```
 
-Install the package by yourself as:
+Run `tepra --help`, `tepra print --help`, or `tepra server --help` for details.
 
-    $ gem source -a http://dream.misasa.okayama-u.ac.jp/rubygems/
-    $ gem install tepra
+## Contributing
 
-Have a configuration file `~/.teprarc`.  The simplest example is shown
-below.  Note that name of label printer should be identical to those
-listed in `Control Panel / Devices and Printers`.
+1. Fork the repository and create a feature branch.
+2. Run the tests and commit your changes.
+3. Push your branch and open a pull request.
 
-    :printer: KING JIM SR3900P
-    :timeout: 30
-    :template: 18x18
+## Build and verify the gem
 
-To print a label with barcode, issue following command.
+With Ruby 2.6.10 and Bundler 2.4.22 installed, run the specs, build the gem and
+check its installed CLI.
 
-    tepra print "20171117134145-914053,TS-SJ-54"
+```sh
+bundle install
+bundle exec rspec
+bundle exec rake build
+bundle exec ruby script/verify_package.rb pkg/tepra-1.2.1.gem
+```
 
-# Commands
+GitHub Actions builds and checks the gem after all Ruby test jobs pass. The
+`tepra-gem` artifact is available in the workflow run. A stable `vVERSION`
+tag on a tested `master` commit also publishes the verified gem and its
+SHA-256 manifest to [GitHub Releases](https://github.com/misasa/tepra/releases).
+The tag must match the version in `lib/tepra/version.rb`.
 
-Commands are summarized as:
+## Download and transfer from Jenkins
 
-| command          | description                                                               | note                       |
-|------------------|---------------------------------------------------------------------------|----------------------------|
-| tepra            | Print QR-code to King Jim's Tepra from command line or via REST interface |                            |
+Use Bash, curl, `shasum` and `link` to fetch a public Release. The default
+selects the latest stable Release. Use `--version` to pin the build to deploy.
 
-# Usage
+```sh
+bash script/download_release.sh --output-dir ./downloads
+bash script/download_release.sh --version 1.2.1 --output-dir ./downloads-1.2.1
+```
 
-See online document with option `--help`.
+The helper verifies the SHA-256 manifest before saving the files. For the
+Jenkins transfer step, set `TEPRA_DEPLOY_DEST` to the server and directory
+configured for the job, then run the helper with `--deploy`.
 
-# Contributing
+```sh
+export TEPRA_DEPLOY_DEST='user@server.example.edu:/absolute/web/path'
+bash script/download_release.sh --version 1.2.1 --output-dir ./transfer-1.2.1 --deploy
+```
 
-1. Fork it ( https://github.com/[my-github-username]/tepra/fork )
-2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Add some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create new Pull Request
-
-## Revise the documentation and reflect to rubygem
-
-Issue following to test your revision.
-
-    $ cd ~/devel-godigo/tepra/
-    $ bundle exec rspec
-
-After revision, issue following.
-
-    $ cd ~/devel-godigo/tepra/
-    $ rake build
-
-You see new gem on `pkg/tepra-1.1.9.gem`.  Move it to
-`documentation/rubygems/gems/`, then make index.
-
-    $ cd ~/devel-godigo/documentation/
-    $ gem generate_index -d rubygems -u
-
-Stage both `rubygems/gems/tepra-1.1.9.gem` and
-`quick/Marshal.4.8/tepra-1.1.9.gemspec.rz` and push modifications.
+The remote parent directory must already exist. Jenkins uses its existing
+noninteractive SSH credentials and known host. The helper copies both assets
+to a new `vVERSION` subdirectory and refuses existing local files or a remote
+version directory. Use a fresh local output directory for each transfer.
+After the transfer, update the gem index through the existing server-side process.
