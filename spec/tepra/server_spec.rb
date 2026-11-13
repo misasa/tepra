@@ -22,6 +22,24 @@ RSpec.describe Tepra::Server do
 
     expect(last_response).to be_ok
     expect(last_response.body).to include('/print', 'Lab printer', printer, template)
+    expect(last_response.body).to match(/<nav\b/)
+    expect(last_response.body).to match(/<form\b/)
+    expect(last_response.body).to match(/<input\b[^>]*name=['"]data['"]/)
+    expect(last_response.body).not_to match(/&lt;(nav|form)\b/)
+  end
+
+  it 'escapes configured printer names while rendering the form as HTML' do
+    Tepra.config = { printer: [{ name: printer, nickname: '<script>alert(1)</script>' }] }
+
+    get '/'
+
+    expect(last_response.body).to match(/<form\b/)
+    expect(last_response.body).to include('&lt;script&gt;alert(1)&lt;/script&gt;')
+    expect(last_response.body).not_to include('<script>alert(1)</script>')
+  end
+
+  it 'renders without template adapter warnings' do
+    expect { get '/' }.not_to output.to_stderr
   end
 
   it 'shows the detected IPv4 address with the request port' do
@@ -31,6 +49,7 @@ RSpec.describe Tepra::Server do
 
     expect(last_response).to be_ok
     expect(last_response.body).to include('192.0.2.10:9999')
+    expect(last_response.body).to match(/<form\b/)
   end
 
   it 'returns printer names, nicknames, and templates as JSON' do
