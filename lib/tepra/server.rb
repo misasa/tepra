@@ -1,6 +1,8 @@
 module Tepra
 	require 'sinatra/base'
 	require 'sinatra/json'
+	# Let Haml register its own Tilt adapter before Sinatra renders a view.
+	require 'haml'
 	class Server < Sinatra::Base
 		get '/' do
 			haml :index
